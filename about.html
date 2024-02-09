@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Bootstrap Example</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
+      crossorigin="anonymous"
+    ></script>
+    <link rel="stylesheet" href="style.css">
+  </head>
+  <body>
+    
+    
+    <nav class="navbar navbar-expand-lg navbar-light">
+      <div class="container">
+        <div class="logoimage"> <img src="logo.png" ></div>
+
+        <div id="navbarNavDropdown">
+          <ul class="navbar-nav">
+            <li class="nav-item dropdown">
+              <div
+                class="btn btn-outline-secondary nav-link"
+                href="#"
+                id="navbarDropdownMenuLink"
+                role="button"
+                data-bs-toggle="dropdown"
+                aria-expanded="false"
+              >
+                <img src="Hamburger_icon.svg">
+              
+              </div>
+              <ul
+                class="dropdown-menu"
+                aria-labelledby="navbarDropdownMenuLink"
+              >
+                <li><a class="dropdown-item" href="#">Action</a></li>
+                <li><a class="dropdown-item" href="#">Another action</a></li>
+                <li><hr class="dropdown-divider" /></li>
+                <li>
+                  <a class="dropdown-item" href="#">Something else here</a>
+                </li>
+              </ul>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </nav>
+    <!-- Standard across all the pages-->
+    <div class="container-lg">
+    <div>
+      <h1 class="title"> TEXTO: </h1>
+      <img src="brasao.png" class="brasao">
+      <div id="abouttext">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce mollis ac turpis vitae porta. Cras hendrerit in dui at ornare. Nulla porta ornare sem, fringilla fringilla libero dignissim vitae. Sed enim justo, venenatis pharetra diam ut, imperdiet sodales lectus. 
+      </div>
+<div id="mainimagecarousel" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <div class="d-flex justify-content-center">
+      <img src="tshirt-2.jpg" class="d-block w-100 carouselimages object-fit-sm-contain" alt="...">
+      <div class="overlay"> text here</div>
+      </div>
+    </div>
+    <div class="carousel-item">
+      <div class="d-flex justify-content-center">
+      <img src="tshirt-2.jpg" class="d-block w-100 carouselimages object-fit-sm-contain" alt="...">
+    </div>
+    </div>
+    <div class="carousel-item">
+      <div class="d-flex justify-content-center">
+      <img src="tshirt-2.jpg" class="d-block w-100  carouselimages object-fit-sm " alt="...">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#mainimagecarousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#mainimagecarousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+<div>
+  
+</div>
+
+  </div>
+  <hr />
+</div>
+  <div class="footer">
+    <p> mais informacoes: </p>
+<p> email</p>
+<p> phone</p>
+<p> pix</p>
+
+  </div>
+
+</body>
+</html>
