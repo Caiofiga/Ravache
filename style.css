@@ -5,23 +5,6 @@
     z-index:12;
   }
 
-  .eventcircle {
-  width: 50%;
-  height: 100%;
-  
-  }
-  .eventimage{
-    width: 120px;
-    height: 120px;
-    display: flex;
-  justify-content: center;
-  flex-direction: column;
-  padding: 10px;
-  border-radius: 30px;
-  }
-  .carouselimages{
-    border-radius: 30px;
-  }
   .logoimage{
     justify-items: center;
     width: 50px;
@@ -58,6 +41,9 @@
   }
 .footer{
     background-color: #9E2800;
-    margin: -10px !important;
+   /* margin: -10px !important;*/
     border-radius: 5px;
-}  
+} 
+.card-img-top{
+    border-radius: 5px;
+}
