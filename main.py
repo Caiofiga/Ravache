@@ -20,10 +20,10 @@ async def getTiktokVideos():
 
         await api.create_sessions(ms_tokens=[ms_token], num_sessions=1, sleep_after=5, headless=True, context_options=context)
         videos = []
-        async for video in api.user(username="aaaldv").videos():
+        async for video in api.user(username="aaaldv.einstein").videos():
             videos.append({"create_time": video.create_time, "id": video.id})
             videos.sort(key=lambda x: x['create_time'], reverse=True)
-            return videos[0]['id']
+        return videos[0]['id']
 
 
 def GetGoogleSheets():
@@ -62,7 +62,7 @@ def about():
     tiktokid = asyncio.run(getTiktokVideos())
     tiktokvideo = "https://www.tiktok.com/@aaaldv.einstein/video/" + tiktokid
     events, products = GetGoogleSheets()
-    return render_template("html/index.html", events=events, products=products, tiktokvideo=tiktokvideo, tiktokid=tiktokid)
+    return render_template("index.html", events=events, products=products, tiktokvideo=tiktokvideo, tiktokid=tiktokid)
 
 
 if __name__ == '__main__':
