@@ -488,6 +488,7 @@
                 src="{{ product.imglink }}"
                 class="card-img-top"
                 alt="{{ product.name }}"
+                onclick= ""
               />
               <div class="card-body">
                 <h5 class="card-title">{{ product.name }}</h5>
@@ -508,4 +509,12 @@
     </div>
   </body>
   <script async src="https://www.tiktok.com/embed.js"></script>
+  <script>
+    const myModal = document.getElementById('myModal')
+const myInput = document.getElementById('myInput')
+
+myModal.addEventListener('shown.bs.modal', () => {
+  myInput.focus()
+})
+
 </html>

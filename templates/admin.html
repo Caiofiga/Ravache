@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Admin Dashboard</title>
+  </head>
+  <body>
+    <h1>Admin Dashboard</h1>
+
+    <section id="events">
+      <h2>Manage Events</h2>
+      <!-- Form to add an event -->
+      <form id="addEventForm">
+        <input type="text" id="eventName" placeholder="Event Name" required />
+        <input type="date" id="eventDate" required />
+        <button type="submit">Add Event</button>
+      </form>
+      <!-- List of events -->
+      <ul id="eventsList"></ul>
+    </section>
+
+    <section id="products">
+      <h2>Manage Products</h2>
+      <!-- Form to add a product -->
+      <form id="addProductForm">
+        <input
+          type="text"
+          id="productName"
+          placeholder="Product Name"
+          required
+        />
+        <input type="number" id="productPrice" placeholder="Price" required />
+        <button type="submit">Add Product</button>
+      </form>
+      <!-- List of products -->
+      <ul id="productsList"></ul>
+    </section>
+
+    <section id="members">
+      <h2>Edit Members</h2>
+      <!-- Form to edit members (simplified example) -->
+      <form id="editMembersForm">
+        <input type="text" id="memberName" placeholder="Member Name" required />
+        <button type="submit">Update Member</button>
+      </form>
+    </section>
+  </body>
+</html>

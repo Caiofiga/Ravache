@@ -43,6 +43,7 @@ def GetGoogleSheets():
             "price": document.to_dict()["price"],
             "details": document.to_dict()["details"],
             "imglink": "static/img/"+document.to_dict()["imglink"]
+
         })
 
     events = []
@@ -54,6 +55,9 @@ def GetGoogleSheets():
             "imglink": "static/img/"+document.to_dict()["imglink"],
             "dtlink": document.to_dict()["dtlink"]
         })
+    events.sort(key=lambda x: x['date'], reverse=True)
+    events[0]["isMain"] = True
+
     return events, prods
 
 
@@ -63,6 +67,11 @@ def about():
     tiktokvideo = "https://www.tiktok.com/@aaaldv.einstein/video/" + tiktokid
     events, products = GetGoogleSheets()
     return render_template("index.html", events=events, products=products, tiktokvideo=tiktokvideo, tiktokid=tiktokid)
+
+
+@app.route('/admin')
+def admin():
+    return render_template("admin.html")
 
 
 if __name__ == '__main__':
