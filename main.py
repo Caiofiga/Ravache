@@ -1,4 +1,3 @@
-from TikTokApi import TikTokApi
 from flask import Flask, request, jsonify, render_template
 from googleapiclient.discovery import build
 import firebase_admin
@@ -7,24 +6,6 @@ import asyncio
 
 
 app = Flask(__name__)
-
-# get your own ms_token from your cookies on tiktok.com
-ms_token = "IYN0NbOzlUTlI2-08wAS8eleK9to-eXA-DTWeXtb5A5UdDcB7jBQyGkK6je-bUxaUQC3UH6RhV1nnd2DjrydCurQNiFReePtKEEzu0MiyaY6NZ-zLCHPdi4OvG_jQZBqgQUq_9eMGaVY"
-context = {
-    "user_agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.110 Safari/537.36"
-}
-
-
-async def getTiktokVideos():
-    async with TikTokApi() as api:
-
-        await api.create_sessions(ms_tokens=[ms_token], num_sessions=1, sleep_after=5, headless=True, context_options=context)
-        videos = []
-        async for video in api.user(username="aaaldv.einstein").videos():
-            videos.append({"create_time": video.create_time, "id": video.id})
-            videos.sort(key=lambda x: x['create_time'], reverse=True)
-        return videos[0]['id']
-
 
 def GetGoogleSheets():
 
@@ -63,8 +44,9 @@ def GetGoogleSheets():
 
 @app.route('/')
 def about():
-    tiktokid = asyncio.run(getTiktokVideos())
-    tiktokvideo = "https://www.tiktok.com/@aaaldv.einstein/video/" + tiktokid
+    #tiktokid = asyncio.run(getTiktokVideos())
+    tiktokvideo = "https://www.tiktok.com/@aaaldv.einstein/video/7312864902778080518"
+    tiktokid = "7312864902778080518"
     events, products = GetGoogleSheets()
     return render_template("index.html", events=events, products=products, tiktokvideo=tiktokvideo, tiktokid=tiktokid)
 
