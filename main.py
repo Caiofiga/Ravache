@@ -3,9 +3,11 @@ from googleapiclient.discovery import build
 import firebase_admin
 from firebase_admin import credentials, db, firestore
 import asyncio
+from datetime import datetime, timedelta, timezone
 
 
 app = Flask(__name__)
+
 
 def GetGoogleSheets():
 
@@ -19,36 +21,64 @@ def GetGoogleSheets():
     db = firestore.client()
     prods = []
     for document in db.collection(u'prods').stream():
+        doc_dict = document.to_dict()  # Fetch document data once to optimize
         prods.append({
-            "name": document.to_dict()["name"],
-            "price": document.to_dict()["price"],
-            "details": document.to_dict()["details"],
-            "imglink": "static/img/"+document.to_dict()["imglink"]
-
+            "name": doc_dict["name"],
+            "price": doc_dict["price"],
+            "details": doc_dict["details"],
+            "imglink": f"static/img/{doc_dict['imglink']}",
+            "id": document.id
         })
 
     events = []
     for document in db.collection(u'events').stream():
+        doc_dict = document.to_dict()
         events.append({
-            "name": document.to_dict()["name"],
-            "date": document.to_dict()["date"],
-            "details": document.to_dict()["details"],
-            "imglink": "static/img/"+document.to_dict()["imglink"],
-            "dtlink": document.to_dict()["dtlink"]
+            "name": doc_dict["name"],
+            "date": doc_dict["date"],
+            "details": doc_dict["details"],
+            "imglink": f"static/img/{doc_dict['imglink']}",
+            "dtlink": doc_dict["dtlink"],
+            "isMain": False  # Initialize all events as not main
         })
-    events.sort(key=lambda x: x['date'], reverse=True)
-    events[0]["isMain"] = True
+
+    # Make 'now' timezone-aware, matching Firestore's UTC timezone
+    now = datetime.now(timezone.utc)
+    closest_delta = timedelta.max
+    closest_event_index = None
+
+    for index, event in enumerate(events):
+        event_time = event["date"]  # Directly use the datetime object
+        delta = event_time - now
+        if delta < timedelta(0):
+            event['date'] = f"{event_time.day}/{event_time.month}/{event_time.year}"
+        else:
+            months = delta.days // 30  # Calculate approximate months
+            days = delta.days % 30  # Calculate the remainder of days
+
+            # Event is in the future and closer than any previously found
+            event['date'] = f"{months} {'month' if months >= 1 else 'months'}, {days} {'day' if days >= 1 else 'days'} from now"
+
+        if timedelta(0) <= delta < closest_delta:
+            if closest_event_index is not None:
+                events[closest_event_index]["isMain"] = False
+                closest_delta = delta
+                closest_event_index = index
+                event["isMain"] = True
+
+    # Ensure only the closest future event is marked as main
+    if closest_event_index is not None:
+        for i, event in enumerate(events):
+            if i != closest_event_index:
+                event["isMain"] = False
 
     return events, prods
 
 
 @app.route('/')
 def about():
-    #tiktokid = asyncio.run(getTiktokVideos())
-    tiktokvideo = "https://www.tiktok.com/@aaaldv.einstein/video/7312864902778080518"
-    tiktokid = "7312864902778080518"
     events, products = GetGoogleSheets()
-    return render_template("index.html", events=events, products=products, tiktokvideo=tiktokvideo, tiktokid=tiktokid)
+    return render_template("index.html", events=events, products=products)
 
 
 @app.route('/admin')
