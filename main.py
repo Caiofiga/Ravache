@@ -77,6 +77,11 @@ def GetGoogleSheets():
     return events, prods
 
 
+@app.template_filter('first_words')
+def first_words(s, count=2):
+    return ' '.join(s.split()[:count])
+
+
 @app.route('/')
 def about():
     events, products = GetGoogleSheets()
