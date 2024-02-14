@@ -133,7 +133,8 @@
       <section id="events" class="container section">
         <h2 style="margin-bottom: 30px">Eventos</h2>
         <div class="row">
-          {% for event in events %} {% if event.isMain %}
+          {% for event in events %} 
+          {% if event.isMain %}
           <!-- Main Event -->
           <div class="col-lg-1"></div>
           <div class="col-lg-4" style="width: 30rem">
@@ -141,7 +142,10 @@
               <div class="card">
                 <img src="{{ event.imglink }}" class="card-img-top" alt="..." />
                 <div class="card-body">
-                  <h5 class="card-title">{{ event.name }}</h5>
+                  <h5 class="card-title d-flex w-100 justify-content-between">
+                    {{ event.name }}
+                    <small>{{ event.date }}</small>
+                  </h5>
                   <p class="card-text">{{ event.details }}</p>
                   <a href="{{ event.dtlink }}" class="btn btn-primary"
                     >Go somewhere</a
@@ -160,13 +164,21 @@
                 aria-current="true"
               >
                 <hr />
-                <div class="d-flex w-100 justify-content-between">
+                <div class="row">
+                <div class="col col-4">
+                  <img src="{{event.imglink}}" style="width: 50%; border-radius: 5px; ">
+                </div>
+                <div class="col col-4">
                   <h5 class="mb-1">{{ event.name }}</h5>
                   <small>{{ event.date }}</small>
                 </div>
+                <div class="col col-4">
+                <small>{{ event.time }}</small>
                 <p class="mb-1">{{ event.details }}</p>
-                <small>And some small print.</small>
+                </div>
+              </div>
               </a>
+            
             </div>
           </div>
           {% endif %} {% endfor %}
@@ -187,7 +199,10 @@
                 data-bs-target="#{{product.id}}"
               />
               <div class="card-body">
-                <h5 class="card-title">{{ product.name }}</h5>
+                <h5 class="card-title d-flex w-100 justify-content-between">
+                  {{ product.name }}
+                  <small>{{ product.price }}</small>
+                </h5>
                 <p class="card-text">{{ product.details }}</p>
                 <button
                   type="button"
@@ -211,17 +226,12 @@
             <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="productlabel">
-                    {{product.name}}
+                  <h5 class="modal-title d-flex w-100 justify-content-between">
+                    {{ product.name }}
+                    <small>{{ product.price }}</small>
                   </h5>
-                  <button
-                    type="button"
-                    class="close"
-                    data-bs-dismiss="modal"
-                    aria-label="Close"
-                  >
-                    <span aria-hidden="true">&times;</span>
-                  </button>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    
                 </div>
                 <div class="modal-body">
                   <div class="row">
@@ -234,7 +244,7 @@
                     </div>
                     <div class="col-md-6">
                       <h5>{{product.details}}<h5>
-                        <button class="btn btn-sucess" />
+                        <button class="btn btn-success modalbutton" > Comprar </button>  
 
                     </div>
                   </div>

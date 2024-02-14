@@ -113,3 +113,11 @@ body {
  height: 100%;
  border-radius: 5px;
  }
+ .modalbutton{
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  padding: 10px;
+  margin: 15px;
+  background-color: lightblue; /* Just for visibility */
+}
