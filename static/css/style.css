@@ -1,6 +1,7 @@
 
 body {
     font-family: 'Roboto', sans-serif;
+    padding-top: 75px;
   }
 
 .navbar {
@@ -100,7 +101,7 @@ body {
   }
 
  .logoimg{
-  width: 5%;
+  width: 60px;
   margin-bottom: -15px;
   margin-top: -15px;
  }

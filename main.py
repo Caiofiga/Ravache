@@ -3,11 +3,14 @@ from googleapiclient.discovery import build
 import firebase_admin
 from firebase_admin import credentials, db, firestore
 import asyncio
+import threading
 from datetime import datetime, timedelta, timezone
 
 
 app = Flask(__name__)
-
+events, products = [], []
+checktime = datetime.max
+data_lock = threading.Lock()
 
 def GetGoogleSheets():
 
@@ -20,7 +23,8 @@ def GetGoogleSheets():
         firebase_admin.initialize_app(cred)
     db = firestore.client()
     prods = []
-    for document in db.collection(u'prods').stream():
+    prodocuments =  db.collection(u'prods').stream()
+    for document in prodocuments:
         doc_dict = document.to_dict()  # Fetch document data once to optimize
         prods.append({
             "name": doc_dict["name"],
@@ -31,7 +35,8 @@ def GetGoogleSheets():
         })
 
     events = []
-    for document in db.collection(u'events').stream():
+    eventdocuments = db.collection(u'events').stream()
+    for document in eventdocuments:
         doc_dict = document.to_dict()
         events.append({
             "name": doc_dict["name"],
@@ -84,13 +89,25 @@ def first_words(s, count=2):
 
 @app.route('/')
 def about():
-    events, products = GetGoogleSheets()
+    global events, products, checktime
+
+    
+
+    if (checktime - datetime.now()) > timedelta(minutes=10):
+        with data_lock:
+            print(data_lock)
+            events, products = GetGoogleSheets()
+            checktime = datetime.now()
     return render_template("index.html", events=events, products=products)
 
 
 @app.route('/admin')
 def admin():
-    events, products = GetGoogleSheets()
+    global events, products, checktime
+    if (checktime - datetime.now()) > timedelta(minutes=10):
+        with data_lock:
+            events, products = GetGoogleSheets()
+            checktime = datetime.now()
     return render_template("admin.html", events=events, products=products)
 
 

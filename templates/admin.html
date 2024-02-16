@@ -6,44 +6,50 @@
     <title>Admin Dashboard</title>
   </head>
   <body>
-    <h1>Admin Dashboard</h1>
-
-    <section id="events">
-      <h2>Manage Events</h2>
-      <!-- Form to add an event -->
-      <form id="addEventForm">
-        <input type="text" id="eventName" placeholder="Event Name" required />
-        <input type="date" id="eventDate" required />
-        <button type="submit">Add Event</button>
-      </form>
-      <!-- List of events -->
-      <ul id="eventsList"></ul>
-    </section>
-
-    <section id="products">
-      <h2>Manage Products</h2>
-      <!-- Form to add a product -->
-      <form id="addProductForm">
-        <input
-          type="text"
-          id="productName"
-          placeholder="Product Name"
-          required
-        />
-        <input type="number" id="productPrice" placeholder="Price" required />
-        <button type="submit">Add Product</button>
-      </form>
-      <!-- List of products -->
-      <ul id="productsList"></ul>
-    </section>
-
-    <section id="members">
-      <h2>Edit Members</h2>
-      <!-- Form to edit members (simplified example) -->
-      <form id="editMembersForm">
-        <input type="text" id="memberName" placeholder="Member Name" required />
-        <button type="submit">Update Member</button>
-      </form>
-    </section>
+    <div class="container">
+      <h1>Admin Dashboard</h1>
+      <section id="events">
+        <div class="list-group-flush">
+          {{% for event in events%}}
+          <div
+            class="list-group-item list-group-item-action"
+            aria-current="true"
+          >
+            <div class="row">
+              <div class="col-4">
+                <img
+                  src="{{ event.imglink }}"
+                  style="width: 100%; border-radius: 5px"
+                />
+              </div>
+              <div class="col-8">
+                <!-- Adjusted for more space for text -->
+                <h5 class="mb-1">{{ event.name }}</h5>
+                <small>{{ event.date }}</small>
+                <p class="mb-1">{{ event.details|first_words(5) }}</p>
+                <small>{{ event.time }}</small>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  onclick="window.location.href='{{event.dtlink}}'"
+                >
+                  link
+                </button>
+                
+                <button 
+                type="button"
+                class="btn btn-danger"
+                onclick="{{"deleteevent"}}"
+                >
+                &times;
+              </button>
+                >
+              </div>
+            </div>
+          </div>
+          {{% end for %}}
+        </div>
+      </section>
+    </div>
   </body>
 </html>
