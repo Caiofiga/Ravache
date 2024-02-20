@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, render_template, redirect
 from googleapiclient.discovery import build
 import firebase_admin
 from firebase_admin import credentials, db, firestore
@@ -87,6 +87,7 @@ def first_words(s, count=2):
     return ' '.join(s.split()[:count])
 
 
+
 @app.route('/')
 def about():
     global events, products, checktime
@@ -98,7 +99,26 @@ def about():
             print(data_lock)
             events, products = GetGoogleSheets()
             checktime = datetime.now()
-    return render_template("index.html", events=events, products=products)
+    return render_template("index.html")
+
+
+@app.route('/loja')
+def store():
+    global events, products, checktime
+    if (checktime - datetime.now()) > timedelta(minutes=10):
+        with data_lock:
+            events, products = GetGoogleSheets()
+            checktime = datetime.now()
+    return render_template("loja.html", products=products)
+
+@app.route('/eventos')
+def events():
+    global events, products, checktime
+    if (checktime - datetime.now()) > timedelta(minutes=10):
+        with data_lock:
+            events, products = GetGoogleSheets()
+            checktime = datetime.now()
+    return render_template("eventos.html", events=events)
 
 
 @app.route('/admin')

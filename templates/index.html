@@ -22,7 +22,10 @@
     <div class="container">
       <nav class="navbar fixed-top navbar-expand-lg">
         <div class="container-fluid">
-          <img class="navbar-brand logoimg" src="{{url_for('static', filename='img/logo.png')}}" />
+          <img
+            class="navbar-brand brasaoimg"
+            src="{{url_for('static', filename='img/brasao.png')}}"
+          />
           <button
             class="navbar-toggler"
             id="menu-button"
@@ -46,7 +49,12 @@
                 <a class="nav-link" href="#store">Store</a>
               </li>
               <li class="nav-item">
-                <a class="nav-link" href="#socialmedia">Socials</a>
+                <a
+                  class="nav-link"
+                  href="#socialmedia"
+                  onclick="javasrcript:window.location.replace(this.href + '/')"
+                  >Socials</a
+                >
               </li>
             </ul>
           </div>
@@ -68,9 +76,10 @@
         <div class="row">
           <div class="col-md-6">
             <img
-              src="{{ url_for('static', filename='img/brasao.png') }}"
+              src="{{ url_for('static', filename='img/logo.png') }}"
               alt="Hero Image"
               class="img-fluid"
+              style="width: 65%"
             />
           </div>
           <div class="col-md-6">
@@ -88,143 +97,133 @@
         </div>
       </section>
 
-  
-      <section id="events" class="container section">
-        <h2 style="margin-bottom: 30px">Eventos: </h2>
+      <section id="management">
+        <h1>Gerenciamento:</h1>
         <div class="row">
-          
-          <!-- Main Event -->
-          <div class="col-lg-3"></div>
-          <div class="col-lg-8" style="width: 30rem">
-          {% for event in events %} 
-          {% if event.isMain %}
-            <div class="main-event">
-              <div class="card">
-                <img src="{{ event.imglink }}" class="card-img-top" alt="..." />
-                <div class="card-body">
-                  <p class="card-title d-flex w-100 justify-content-between">
-                    {{ event.name }}
-                    <small>{{ event.date }}</small>
-                  </p>
-                  
-                  <p class="card-text">{{ event.details }}</p>
-                  <a href="{{ event.dtlink }}" class="btn btn-primary"
-                    >Go somewhere</a
-                  >
-                  
-                </div>
-              </div>
-            </div>
+          <div class="col-md-4">
+            <img
+              src="{{ url_for('static', filename='img/management1.jpg') }}"
+              alt="Management 1"
+              class="img-fluid"
+            />
+            <h2>Presidente</h2>
+            <p>Nome do Presidente</p>
           </div>
-          {% endif %}
-          {% endfor %}
-
-          <!-- Non-Main Event -->
-          <div class="col-lg-3 px-3"> <!-- Adjust the 'lg' and '6' as needed -->
-            <div class="list-group list-group-flush">
-              {% for event in events %}
-              {% if not event.isMain %}
-                <a href="{{ event.dtlink }}" class="list-group-item list-group-item-action" aria-current="true">
-                  <div class="row">
-                    <div class="col-4">
-                      <img src="{{ event.imglink }}" style="width: 100%; border-radius: 5px;">
-                    </div>
-                    <div class="col-8"> <!-- Adjusted for more space for text -->
-                      <h5 class="mb-1">{{ event.name }}</h5>
-                      <small>{{ event.date }}</small>
-                      <p class="mb-1">{{ event.details|first_words(5) }}</p>
-                      <small>{{ event.time }}</small>
-                    </div>
-                  </div>
-                </a>
-              {% endif %}
-              {% endfor %}
+          <div class="col-md-4">
+            <img
+              src="{{ url_for('static', filename='img/management2.jpg') }}"
+              alt="Management 2"
+              class="img-fluid"
+            />
+            <h2>Vice-Presidente</h2>
+            <p>Nome do Vice-Presidente</p>
+          </div>
+          <div class="col-md-4">
+            <img
+              src="{{ url_for('static', filename='img/management3.jpg') }}"
+              alt="Management 3"
+              class="img-fluid"
+            />
+            <h2>Secretario</h2>
+            <p>Nome do Secretario</p>
+          </div>
+        </div>
+        <hr />
+        <h1>Produtos</h1>
+        <div class="row">
+          <div class="col-md-4">
+            <img
+              src="{{ url_for('static', filename='img/management1.jpg') }}"
+              alt="Management 1"
+              class="img-fluid"
+            />
+            <h2>Presidente</h2>
+            <p>Nome do Presidente</p>
+          </div>
+          <div class="col-md-4">
+            <img
+              src="{{ url_for('static', filename='img/management2.jpg') }}"
+              alt="Management 2"
+              class="img-fluid"
+            />
+            <h2>Vice-Presidente</h2>
+            <p>Nome do Vice-Presidente</p>
+          </div>
+          <div class="col-md-4">
+            <img
+              src="{{ url_for('static', filename='img/management3.jpg') }}"
+              alt="Management 3"
+              class="img-fluid"
+            />
+            <h2>Secretario</h2>
+            <p>Nome do Secretario</p>
+          </div>
+        </div>
+        <hr />
+        <h1>Esportes</h1>
+        <div class="row">
+          <div class="col-md-4">
+            <img
+              src="{{ url_for('static', filename='img/management1.jpg') }}"
+              alt="Management 1"
+              class="img-fluid"
+            />
+            <h2>Presidente</h2>
+            <p>Nome do Presidente</p>
+          </div>
+          <div class="col-md-4">
+            <img
+              src="{{ url_for('static', filename='img/management2.jpg') }}"
+              alt="Management 2"
+              class="img-fluid"
+            />
+            <h2>Vice-Presidente</h2>
+            <p>Nome do Vice-Presidente</p>
+          </div>
+          <div class="col-md-4">
+            <img
+              src="{{ url_for('static', filename='img/management3.jpg') }}"
+              alt="Management 3"
+              class="img-fluid"
+            />
+            <h2>Secretario</h2>
+            <p>Nome do Secretario</p>
+          </div>
+        </div>
+        <hr />
+        <h1>Eventos</h1>
+        <div class="row">
+          <div class="col-md-4">
+            <img
+              src="{{ url_for('static', filename='img/management1.jpg') }}"
+              alt="Management 1"
+              class="img-fluid"
+            />
+            <h2>Presidente</h2>
+            <p>Nome do Presidente</p>
+          </div>
+          <div class="col-md-4">
+            <img
+              src="{{ url_for('static', filename='img/management2.jpg') }}"
+              alt="Management 2"
+              class="img-fluid"
+            />
+            <h2>Vice-Presidente</h2>
+            <p>Nome do Vice-Presidente</p>
+          </div>
+          <div class="col-md-4">
+            <img
+              src="{{ url_for('static', filename='img/management3.jpg') }}"
+              alt="Management 3"
+              class="img-fluid"
+            />
+            <h2>Secretario</h2>
+            <p>Nome do Secretario</p>
+          </div>
         </div>
       </section>
 
-      <section id="store" class="container section">
-        <h2 style="margin-bottom: 30px">Store: </h2>
-        <div class="row">
-          {% for product in products %}
-          <div class="col-lg-4">
-            <div class="card" style="width: 18rem; margin-bottom: 10px">
-              <img
-                src="{{ product.imglink }}"
-                class="card-img-top"
-                alt="{{ product.name }}"
-                data-bs-toggle="modal"
-                data-bs-target="#{{product.id}}"
-              />
-              <div class="card-body">
-                <h5 class="card-title d-flex w-100 justify-content-between">
-                  {{ product.name }}
-                  <small>{{ product.price }}</small>
-                </h5>
-                <p class="card-text">{{ product.details }}</p>
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  onclick="location.href='https://www.youtube.com/watch?v=dQw4w9WgXcQ'"
-                >
-                  Comprar
-                </button>
-              </div>
-            </div>
-          </div>
-          <!-- inicio do Modal -->
-          <div
-            class="modal fade"
-            id="{{product.id}}"
-            tabindex="-1"
-            role="dialog"
-            aria-labelledby="productlabel"
-            aria-hidden="true"
-          >
-            <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h5 class="modal-title d-flex w-100 justify-content-between">
-                    {{ product.name }}
-                    <small>{{ product.price }}</small>
-                  </h5>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    
-                </div>
-                <div class="modal-body">
-                  <div class="row">
-                    <div class="col-md-6">
-                      <img
-                        src="{{ product.imglink }}"
-                        class="card-img-top modalimg"
-                        alt="{{ product.name }}"
-                      />
-                    </div>
-                    <div class="col-md-6">
-                      <h5>{{product.details}}<h5>
-                        <button class="btn btn-success modalbutton" > Comprar </button>  
-
-                    </div>
-                  </div>
-                </div>
-                <div class="modal-footer">
-                  <button
-                    type="button"
-                    class="btn btn-secondary"
-                    data-bs-dismiss="modal"
-                  >
-                    Close
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-          <!-- fim do Modal -->
-
-          {% endfor %}
-        </div>
-      </section>
-
-      <section id='socialmedia'>
+      <section id="socialmedia">
         <h1>Midias Sociais:</h1>
         <div class="row">
           <div class="col-md-6">
@@ -271,7 +270,6 @@
         </div>
       </section>
 
-
       <footer class="footer">
         <p>&copy; 2024 Atletica Bio. Med. Einstein.</p>
         <small> produzido por Caio F</small>
@@ -287,6 +285,5 @@
     function closeNav() {
       document.getElementById("mySidenav").style.width = "0";
     }
-
   </script>
 </html>
