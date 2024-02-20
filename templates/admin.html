@@ -9,12 +9,10 @@
     <div class="container">
       <h1>Admin Dashboard</h1>
       <section id="events">
+        <h2>Events</h2>
         <div class="list-group-flush">
           {{% for event in events%}}
-          <div
-            class="list-group-item list-group-item-action"
-            aria-current="true"
-          >
+          <div class="list-group-item">
             <div class="row">
               <div class="col-4">
                 <img
@@ -28,26 +26,40 @@
                 <small>{{ event.date }}</small>
                 <p class="mb-1">{{ event.details|first_words(5) }}</p>
                 <small>{{ event.time }}</small>
-                <button
-                  type="button"
-                  class="btn btn-primary"
-                  onclick="window.location.href='{{event.dtlink}}'"
-                >
-                  link
-                </button>
-                
-                <button 
-                type="button"
-                class="btn btn-danger"
-                onclick="{{"deleteevent"}}"
-                >
-                &times;
-              </button>
-                >
+                <button class="btn btn-primary">Edit</button>
+                <button class="btn btn-danger">Delete</button>
               </div>
             </div>
           </div>
-          {{% end for %}}
+
+          {{% endfor %}}
+        </div>
+      </section>
+
+      <section id="store">
+        <h2>Store</h2>
+        <div class="list-group-flush">
+          {{% for product in products%}}
+          <div class="list-group-item">
+            <div class="row">
+              <div class="col-4">
+                <img
+                  src="{{ product.imglink }}"
+                  style="width: 100%; border-radius: 5px"
+                />
+              </div>
+              <div class="col-8">
+                <!-- Adjusted for more space for text -->
+                <h5 class="mb-1">{{ product.name }}</h5>
+                <small>{{ product.price }}</small>
+                <p class="mb-1">{{ product.details|first_words(5) }}</p>
+                <button class="btn btn-primary">Edit</button>
+                <button class="btn btn-danger">Delete</button>
+              </div>
+            </div>
+          </div>
+
+          {{% endfor %}}
         </div>
       </section>
     </div>
