@@ -68,13 +68,12 @@
           </div>
         </div>
       </nav>
-      <h1>
+      <h1 style="display:flex; flex-direction: column; align-items: center;" >
         <img src="{{url_for('static', filename='img/brasao.png')}}" alt="Atletica Bio. Med. Einstein" style="width: auto; height: 200px; margin-top: 30px;">
-        Shop:
+          Loja:        
     </h1>
 
         <section id="store" class="container section">
-            <h2 style="margin-bottom: 30px">Store: </h2>
             <div class="row">
               {% for product in products %}
               <div class="col-lg-4">
@@ -167,7 +166,7 @@
   <script async src="https://www.tiktok.com/embed.js"></script>
   <script>
     function openNav() {
-      document.getElementById("mySidenav").style.width = "250px";
+      document.getElementById("mySidenav").style.width = "180px";
     }
     function closeNav() {
       document.getElementById("mySidenav").style.width = "0";

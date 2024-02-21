@@ -79,11 +79,11 @@
               src="{{ url_for('static', filename='img/logo.png') }}"
               alt="Hero Image"
               class="img-fluid"
-              style="width: 65%"
+              style="width: 65%; margin-left: 50px"
             />
           </div>
           <div class="col-md-6">
-            <h1>Atletica da Engenharia Biomedica</h1>
+            <h1 style="text-align: center">Atletica da Engenharia Biomedica</h1>
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
               metus nibh, finibus non neque a, commodo egestas velit. Morbi ut
@@ -99,95 +99,16 @@
       <br />
       <section class="about">
         <h2 style="margin-bottom: 15px">Como functiona uma Atletica?</h2>
-        <div class="row">
-          <div class="col-6">
-            <div id="aboutcaroussel" class="carousel slide">
-              <div class="carousel-indicators">
-                <button
-                  type="button"
-                  data-bs-target="#aboutcaroussel"
-                  data-bs-slide-to="0"
-                  class="active"
-                  aria-current="true"
-                  aria-label="Slide 1"
-                ></button>
-                <button
-                  type="button"
-                  data-bs-target="#aboutcaroussel"
-                  data-bs-slide-to="1"
-                  aria-label="Slide 2"
-                ></button>
-                <button
-                  type="button"
-                  data-bs-target="#aboutcaroussel"
-                  data-bs-slide-to="2"
-                  aria-label="Slide 3"
-                ></button>
-              </div>
-              <div class="carousel-inner">
-                <div class="carousel-item active">
-                  <img
-                    src="{{url_for('static', filename='img/brasao.png')}}"
-                    class="d-block w-100"
-                    alt="fotos da atletica"
-                    style="height: auto; object-fit: contain"
-                  />
-                </div>
-                <div class="carousel-item">
-                  <img
-                    src="{{url_for('static', filename='img/logo.png')}}"
-                    class="d-block w-100"
-                    alt="fotos da atletica"
-                    style="height: auto; object-fit: contain"
-                  />
-                </div>
-                <div class="carousel-item">
-                  <img
-                    src="{{url_for('static', filename='img/will.jpg')}}"
-                    class="d-block w-100"
-                    alt="fotos da atletica"
-                    style="height: auto; object-fit: contain"
-                  />
-                </div>
-              </div>
-              <button
-                class="carousel-control-prev"
-                type="button"
-                data-bs-target="#aboutcaroussel"
-                data-bs-slide="prev"
-              >
-                <span
-                  class="carousel-control-prev-icon"
-                  aria-hidden="true"
-                ></span>
-                <span class="visually-hidden">Previous</span>
-              </button>
-              <button
-                class="carousel-control-next"
-                type="button"
-                data-bs-target="#aboutcaroussel"
-                data-bs-slide="next"
-              >
-                <span
-                  class="carousel-control-next-icon"
-                  aria-hidden="true"
-                ></span>
-                <span class="visually-hidden">Next</span>
-              </button>
-            </div>
-          </div>
-          <div class="col-6">
-            <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
-              metus nibh, finibus non neque a, commodo egestas velit. Morbi ut
-              leo nibh. Etiam aliquam vehicula justo vitae vestibulum. Nulla sed
-              pretium ante. Nunc tristique, mauris sit amet tempus congue, erat
-              erat consectetur erat, ut fringilla mauris sapien in ex. Aliquam
-              consectetur eros nec placerat viverra. Integer mattis justo odio,
-              at luctus dolor elementum in.
-            </p>
-          </div>
-        </div>
+
+        <p>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec metus
+          nibh, finibus non neque a, commodo egestas velit. Morbi ut leo nibh.
+          Etiam aliquam vehicula justo vitae vestibulum. Nulla sed pretium ante.
+          Nunc tristique, mauris sit amet tempus congue, erat erat consectetur
+          erat, ut fringilla mauris sapien in ex. Aliquam consectetur eros nec
+          placerat viverra. Integer mattis justo odio, at luctus dolor elementum
+          in.
+        </p>
       </section>
       <section id="management">
         <h1>Gerenciamento:</h1>
@@ -372,7 +293,7 @@
   <script async src="https://www.tiktok.com/embed.js"></script>
   <script>
     function openNav() {
-      document.getElementById("mySidenav").style.width = "250px";
+      document.getElementById("mySidenav").style.width = "180px";
     }
     function closeNav() {
       document.getElementById("mySidenav").style.width = "0";
