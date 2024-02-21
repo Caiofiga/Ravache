@@ -96,7 +96,99 @@
           </div>
         </div>
       </section>
-
+      <br />
+      <section class="about">
+        <h2 style="margin-bottom: 15px">Como functiona uma Atletica?</h2>
+        <div class="row">
+          <div class="col-6">
+            <div id="aboutcaroussel" class="carousel slide">
+              <div class="carousel-indicators">
+                <button
+                  type="button"
+                  data-bs-target="#aboutcaroussel"
+                  data-bs-slide-to="0"
+                  class="active"
+                  aria-current="true"
+                  aria-label="Slide 1"
+                ></button>
+                <button
+                  type="button"
+                  data-bs-target="#aboutcaroussel"
+                  data-bs-slide-to="1"
+                  aria-label="Slide 2"
+                ></button>
+                <button
+                  type="button"
+                  data-bs-target="#aboutcaroussel"
+                  data-bs-slide-to="2"
+                  aria-label="Slide 3"
+                ></button>
+              </div>
+              <div class="carousel-inner">
+                <div class="carousel-item active">
+                  <img
+                    src="{{url_for('static', filename='img/brasao.png')}}"
+                    class="d-block w-100"
+                    alt="fotos da atletica"
+                    style="height: auto; object-fit: contain"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="{{url_for('static', filename='img/logo.png')}}"
+                    class="d-block w-100"
+                    alt="fotos da atletica"
+                    style="height: auto; object-fit: contain"
+                  />
+                </div>
+                <div class="carousel-item">
+                  <img
+                    src="{{url_for('static', filename='img/will.jpg')}}"
+                    class="d-block w-100"
+                    alt="fotos da atletica"
+                    style="height: auto; object-fit: contain"
+                  />
+                </div>
+              </div>
+              <button
+                class="carousel-control-prev"
+                type="button"
+                data-bs-target="#aboutcaroussel"
+                data-bs-slide="prev"
+              >
+                <span
+                  class="carousel-control-prev-icon"
+                  aria-hidden="true"
+                ></span>
+                <span class="visually-hidden">Previous</span>
+              </button>
+              <button
+                class="carousel-control-next"
+                type="button"
+                data-bs-target="#aboutcaroussel"
+                data-bs-slide="next"
+              >
+                <span
+                  class="carousel-control-next-icon"
+                  aria-hidden="true"
+                ></span>
+                <span class="visually-hidden">Next</span>
+              </button>
+            </div>
+          </div>
+          <div class="col-6">
+            <p>
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec
+              metus nibh, finibus non neque a, commodo egestas velit. Morbi ut
+              leo nibh. Etiam aliquam vehicula justo vitae vestibulum. Nulla sed
+              pretium ante. Nunc tristique, mauris sit amet tempus congue, erat
+              erat consectetur erat, ut fringilla mauris sapien in ex. Aliquam
+              consectetur eros nec placerat viverra. Integer mattis justo odio,
+              at luctus dolor elementum in.
+            </p>
+          </div>
+        </div>
+      </section>
       <section id="management">
         <h1>Gerenciamento:</h1>
         <div class="row">
@@ -222,7 +314,7 @@
           </div>
         </div>
       </section>
-
+      <br />
       <section id="socialmedia">
         <h1>Midias Sociais:</h1>
         <div class="row">
@@ -269,7 +361,7 @@
           </div>
         </div>
       </section>
-
+      <br />
       <footer class="footer">
         <p>&copy; 2024 Atletica Bio. Med. Einstein.</p>
         <small> produzido por Caio F</small>
