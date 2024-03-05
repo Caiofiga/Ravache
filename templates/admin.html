@@ -4,62 +4,86 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Dashboard</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
   </head>
+
   <body>
     <div class="container">
       <h1>Admin Dashboard</h1>
       <section id="events">
         <h2>Events</h2>
-        <div class="list-group-flush">
-          {{% for event in events%}}
-          <div class="list-group-item">
-            <div class="row">
-              <div class="col-4">
-                <img
-                  src="{{ event.imglink }}"
-                  style="width: 100%; border-radius: 5px"
-                />
-              </div>
-              <div class="col-8">
-                <!-- Adjusted for more space for text -->
-                <h5 class="mb-1">{{ event.name }}</h5>
-                <small>{{ event.date }}</small>
-                <p class="mb-1">{{ event.details|first_words(5) }}</p>
-                <small>{{ event.time }}</small>
-                <button class="btn btn-primary">Edit</button>
-                <button class="btn btn-danger">Delete</button>
-              </div>
+        <div class="row">
+          {% for event in events %}
+          <div class="col-md-4">
+            <!-- Use col-md-4 for responsiveness -->
+            <div class="list-group-item" style="margin-bottom: 15px">
+              <img
+                src="{{ event.imglink }}"
+                style="width: 100%; border-radius: 5px"
+              />
+              <h5 class="mb-1">{{ event.name }}</h5>
+              <small>{{ event.date }}</small>
+              <p class="mb-1">{{ event.details|first_words(5) }}</p>
+              <small>{{ event.time }}</small>
+              <button class="btn btn-primary">Edit</button>
+              <button class="btn btn-danger">Delete</button>
             </div>
           </div>
-
-          {{% endfor %}}
+          {% endfor %}
+          <div
+            class="col-md-4"
+            style="margin-bottom: 15px; align-items: center; display: flex"
+          >
+            <div class="list-group-item text-center">
+              <button class="btn btn-success">+</button>
+              <h5 class="mb-1">Add Event</h5>
+            </div>
+          </div>
         </div>
       </section>
 
       <section id="store">
         <h2>Store</h2>
-        <div class="list-group-flush">
-          {{% for product in products%}}
-          <div class="list-group-item">
-            <div class="row">
-              <div class="col-4">
-                <img
-                  src="{{ product.imglink }}"
-                  style="width: 100%; border-radius: 5px"
-                />
-              </div>
-              <div class="col-8">
-                <!-- Adjusted for more space for text -->
-                <h5 class="mb-1">{{ product.name }}</h5>
-                <small>{{ product.price }}</small>
-                <p class="mb-1">{{ product.details|first_words(5) }}</p>
-                <button class="btn btn-primary">Edit</button>
-                <button class="btn btn-danger">Delete</button>
-              </div>
+        <div class="row">
+          {% for product in products%}
+          <div class="col-md-4">
+            <div class="list-group-item" style="margin-bottom: 15px">
+              <img
+                src="{{ product.imglink }}"
+                style="width: 100%; border-radius: 5px"
+              />
             </div>
+
+            <!-- Adjusted for more space for text -->
+            <h5 class="mb-1">{{ product.name }}</h5>
+            <small>{{ product.price }}</small>
+            <p class="mb-1">{{ product.details|first_words(5) }}</p>
+            <button class="btn btn-primary">Edit</button>
+            <button class="btn btn-danger">Delete</button>
           </div>
 
-          {{% endfor %}}
+          {% endfor %}
+
+          <div
+            class="col-md-4"
+            style="margin-bottom: 15px; align-items: center; display: flex"
+          >
+            <div class="list-group-item text-center">
+              <button class="btn btn-success">+</button>
+              <h5 class="mb-1">Add product</h5>
+            </div>
+          </div>
         </div>
       </section>
     </div>
