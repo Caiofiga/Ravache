@@ -1,27 +1,68 @@
-from flask import Flask, render_template, redirect
-from googleapiclient.discovery import build
+from flask import Flask, render_template, redirect, request, session, flash
+from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
+from flask_bcrypt import Bcrypt
+from flask_wtf import FlaskForm, CSRFProtect
+from wtforms import StringField, SubmitField, PasswordField
+from wtforms.validators import DataRequired, Length
+from flask_bootstrap import Bootstrap5
 import firebase_admin
+import wtforms
+import secrets
 from firebase_admin import credentials, db, firestore
+from google.cloud.firestore_v1.base_query import FieldFilter
 import asyncio
 import threading
 from datetime import datetime, timedelta, timezone
 
 
 app = Flask(__name__)
+app.secret_key = secrets.token_urlsafe(16)
 events, products = [], []
 checktime = datetime.max
 data_lock = threading.Lock()
+bcrypt = Bcrypt(app)
+# Bootstrap-Flask requires this line
+bootstrap = Bootstrap5(app)
+# Flask-WTF requires this line
+csrf = CSRFProtect(app)
+loginManager = LoginManager()
+loginManager.init_app(app)
 
-def GetGoogleSheets():
+class LoginForm(FlaskForm):
+    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    password = PasswordField('Password', validators=[DataRequired()])
+    remember = wtforms.BooleanField('Remember Me')
+    submit = SubmitField('Login')
 
-    # Fetch the service account key JSON file contents
-    cred = credentials.Certificate('sheetviewerkey.json')
+ # Fetch the service account key JSON file contents
+cred = credentials.Certificate('sheetviewerkey.json')
 
     # Initialize the app with a service account, granting admin privileges
 
-    if firebase_admin._apps.__len__() == 0:
-        firebase_admin.initialize_app(cred)
-    db = firestore.client()
+#user class that extends usermixins
+class User(UserMixin):
+    def __init__(self, id, username, password):
+        self.id = id
+        self.username = username
+        self.password = password
+
+
+    @loginManager.user_loader
+    def get(user_id):
+        user_dict = db.collection(u'users').document(user_id).get()
+        if user_dict.exists:
+            user_data = user_dict.to_dict()
+            user = User(id=user_dict.id, username=user_data['username'], password=user_data['password'])
+            return user
+        return None
+
+if firebase_admin._apps.__len__() == 0:
+    firebase_admin.initialize_app(cred)
+db = firestore.client()
+
+def GetGoogleSheets():
+
+   
     prods = []
     prodocuments =  db.collection(u'prods').stream()
     for document in prodocuments:
@@ -86,7 +127,9 @@ def GetGoogleSheets():
 def first_words(s, count=2):
     return ' '.join(s.split()[:count])
 
-
+@loginManager.unauthorized_handler
+def unauthorized():
+    return redirect('/login')
 
 @app.route('/')
 def about():
@@ -122,13 +165,55 @@ def events():
 
 
 @app.route('/admin')
+@login_required
 def admin():
     global events, products, checktime
     if (checktime - datetime.now()) > timedelta(minutes=10):
         with data_lock:
             events, products = GetGoogleSheets()
             checktime = datetime.now()
+    if request.cookies.get('admin') == 'true':
+        return render_template("admin.html", events=events, products=products)
+    else: login()
     return render_template("admin.html", events=events, products=products)
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        queries = db.collection(u'users').where(filter=FieldFilter("username", "==", form.username.data)).stream()
+        user_dict = None
+        for query in queries:
+            user_dict = query.to_dict()
+            user_dict['id'] = query.id
+            break
+        if user_dict is None:
+            flash ('User not found')
+            return render_template("login.html", form=form)
+        if bcrypt.check_password_hash(user_dict['password'], form.password.data):
+            user = User(user_dict['id'], user_dict['username'], user_dict['password'])
+            login_user(user, remember=form.remember.data if form.remember.data else False)
+            if user.is_authenticated:
+                return redirect('/admin')
+        
+    return render_template("login.html", form=form)
+
+
+@app.route('/logout')
+def logout():
+    user = "xa"
+    password = "xa"
+    hashed_password = bcrypt.generate_password_hash(password).decode('utf-8')
+    user_ref = db.collection(u'users').document()
+    user_ref.set({
+        u'username': user,
+        u'password': hashed_password
+    })
+    return "0"
+
+
+
 
 
 if __name__ == '__main__':

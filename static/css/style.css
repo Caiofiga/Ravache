@@ -136,3 +136,22 @@ body {
   margin-top: 15px;
   margin-bottom: 15px;
 }
+
+.rainbow-text {
+  background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+  -webkit-background-clip: text;
+  color: transparent;
+  animation: rainbow-animation 3s linear infinite;
+  background-size: 400% 100%;
+}
+
+@keyframes rainbow-animation {
+  0% {background-position: 0%;}
+  50% {background-position: 100%;}
+  100% {background-position: 135%;}
+}
+
+label.myLabel input[type="file"] {
+  position:absolute;
+  top: -1000px;
+}
