@@ -18,6 +18,7 @@ from datetime import datetime, timedelta, timezone
 app = Flask(__name__)
 app.secret_key = secrets.token_urlsafe(16)
 events, products = [], []
+revalidate = False
 checktime = datetime.max
 data_lock = threading.Lock()
 bcrypt = Bcrypt(app)
@@ -37,7 +38,7 @@ class LoginForm(FlaskForm):
  # Fetch the service account key JSON file contents
 cred = credentials.Certificate('sheetviewerkey.json')
 
-    # Initialize the app with a service account, granting admin privileges
+ 
 
 #user class that extends usermixins
 class User(UserMixin):
@@ -85,6 +86,7 @@ def GetGoogleSheets():
             "details": doc_dict["details"],
             "imglink": f"static/img/{doc_dict['imglink']}",
             "dtlink": doc_dict["dtlink"],
+            'id': document.id,
             "isMain": False  # Initialize all events as not main
         })
 
@@ -164,18 +166,28 @@ def events():
     return render_template("eventos.html", events=events)
 
 
-@app.route('/admin')
+@app.route('/admin', methods=['GET', 'POST'])
 @login_required
 def admin():
-    global events, products, checktime
-    if (checktime - datetime.now()) > timedelta(minutes=10):
-        with data_lock:
-            events, products = GetGoogleSheets()
-            checktime = datetime.now()
-    if request.cookies.get('admin') == 'true':
+    global events, products, checktime, revalidate
+
+    if request.method == 'POST':
+        print('yee')
+        if 'deleteEventButton' in request.form:
+            print(request.form['deleteEventButton'])
+        else:
+            pass # unknown
+    elif request.method == 'GET':
+        if (checktime - datetime.now()) > timedelta(minutes=10) or revalidate:
+            with data_lock:
+                events, products = GetGoogleSheets()
+                checktime = datetime.now()
+                revalidate = False
+                print('revalidated')
+        if request.cookies.get('admin') == 'true':
+            return render_template("admin.html", events=events, products=products)
+        else: login()
         return render_template("admin.html", events=events, products=products)
-    else: login()
-    return render_template("admin.html", events=events, products=products)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -213,7 +225,19 @@ def logout():
     return "0"
 
 
-
+@app.route('/delete', methods=['POST'])
+def delete():
+    global events, products, checktime, revalidate
+    if request.method == 'POST':
+        match request.form.get('type'):
+            case 'event':
+                try:
+                    db.collection(u'events').document(request.form.get('id')).delete()
+                    revalidate = True
+                    return '200'
+                except Exception as e:
+                    return 'Error 500: ' + e
+   
 
 
 if __name__ == '__main__':
