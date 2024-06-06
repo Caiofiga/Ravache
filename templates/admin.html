@@ -77,7 +77,7 @@
             <button class="btn btn-primary"                     
             data-bs-toggle="modal"
             data-bs-target="#{{product.id}}">Edit</button>
-            <button class="btn btn-danger">Delete</button>
+            <button  class="btn btn-danger, deleteProdButton" name="deleteProdButton" >Delete</button>
           </div>
               <!-- inicio do Modal -->
               <div
@@ -190,6 +190,22 @@
     <script>
       const csrf_token = "{{ csrf_token() }}";
       document.addEventListener("DOMContentLoaded", function () {
+        document.querySelectorAll(".deleteEventButton").forEach((button) => {
+          button.addEventListener("click", () => {
+            $.ajax({
+              url: "/delete",
+              type: "POST",
+              data: {
+                csrf_token: csrf_token,
+                type: "event",
+                id: button.id,
+              },
+              success: function (response) {
+                location.reload();
+              },
+            })
+          });
+        });
         document.querySelectorAll(".deleteEventButton").forEach((button) => {
           button.addEventListener("click", () => {
             $.ajax({

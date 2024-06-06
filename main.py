@@ -237,6 +237,13 @@ def delete():
                     return '200'
                 except Exception as e:
                     return 'Error 500: ' + e
+            case 'product':
+                try:
+                    db.collection(u'prods').document(request.form.get('id')).delete()
+                    revalidate = True
+                    return '200'
+                except Exception as e:
+                    return 'Error 500: ' + e
    
 
 
