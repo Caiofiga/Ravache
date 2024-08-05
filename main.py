@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, session, flash
+from flask import Flask, render_template, redirect, request, session, flash, send_file
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
 from flask_bcrypt import Bcrypt
 from flask_wtf import FlaskForm, CSRFProtect
@@ -8,12 +8,13 @@ from flask_bootstrap import Bootstrap5
 import firebase_admin
 import wtforms
 import secrets
+import os 
 from firebase_admin import credentials, db, firestore
 from google.cloud.firestore_v1.base_query import FieldFilter
 import asyncio
 import threading
+import base64
 from datetime import datetime, timedelta, timezone
-
 
 app = Flask(__name__)
 app.secret_key = secrets.token_urlsafe(16)
@@ -127,7 +128,8 @@ def GetGoogleSheets():
 
 @app.template_filter('first_words')
 def first_words(s, count=2):
-    return ' '.join(s.split()[:count])
+    if s is not None:
+        return ' '.join(s.split()[:count])
 
 @loginManager.unauthorized_handler
 def unauthorized():
@@ -165,6 +167,9 @@ def events():
             checktime = datetime.now()
     return render_template("eventos.html", events=events)
 
+@app.route('/favicon.ico')
+def favicon():
+    return send_file('favicon.ico', mimetype='image')
 
 @app.route('/admin', methods=['GET', 'POST'])
 @login_required
@@ -224,6 +229,36 @@ def logout():
     })
     return "0"
 
+@app.route('/add', methods=['POST'])
+def add():
+    global events, products, checktime, revalidate
+    if request.method == 'POST':
+        match request.form.get('type'):
+            case 'event':
+                try:
+                    #db.collection(u'events').document(request.form.get('id')).delete()
+                    revalidate = True
+                    return '200'
+                except Exception as e:
+                    return 'Error 500: ' + str(e)
+            case 'product':
+                try:
+                    print(request.form.get('db'))
+                    prodtoadd = Newproduct(request.form.get('name'), request.form.get('price'), request.form.get('details'), request.form.get('imageb64'))
+                    newdoc = db.collection(u'prods').document()
+                    newdoc.set({
+                        u'name': prodtoadd.name,
+                        u'price': prodtoadd.price,
+                        u'details': prodtoadd.details,
+                        u'imglink': prodtoadd.imglink
+                    })
+
+                    #db.collection(u'prods').document(request.form.get('id')).delete()
+                    print("Received")
+                    revalidate = True
+                    return '200'
+                except Exception as e:
+                    return 'Error 500: ' + str(e)
 
 @app.route('/delete', methods=['POST'])
 def delete():
@@ -245,6 +280,18 @@ def delete():
                 except Exception as e:
                     return 'Error 500: ' + e
    
+class Newproduct():
+    def __init__(self, name, price, details, imgb64):
+        sanitized_name = name.replace('\\', '_')
+        self.name = sanitized_name
+        self.price = price
+        self.details = details
+        with open(f'static/img/{self.name}.png', 'wb') as f:
+            f.write(base64.b64decode(imgb64))
+            self.imglink = f'{self.name}.png'
+
+
+
 
 
 if __name__ == '__main__':

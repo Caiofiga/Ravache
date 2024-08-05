@@ -50,7 +50,7 @@
           >
             <div class="list-group-item text-center" style="left: 30%">
               <button class="btn btn-success">+</button>
-              <h5 class="mb-1">Add Event</h5>
+              <h5 class="mb-1">Add Event</h5> <!-- TODO: Add modal for adding event -->
             </div>
           </div>
         </div>
@@ -141,7 +141,7 @@
                 <div class="modal fade" id="newmodal" tabindex="-1" role="dialog" aria-labelledby="productlabel" aria-hidden="true">
                   <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                     <div class="modal-content">
-                      <form>
+                      <form class="newprodform">
                         <div class="modal-header">
                           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                             <input class="mdl-textfield__input" type="text" id="prodname">
@@ -165,7 +165,7 @@
                                 </div>
                               </small>
                               <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <textarea class="mdl-textfield__input" maxlength="300" type="text" rows="5" style="resize: none;"> </textarea>
+                                <textarea id="proddts" class="mdl-textfield__input" maxlength="300" type="text" rows="5" style="resize: none;"> </textarea>
                                 <label class="mdl-textfield__label" for="proddts" >Detalhes do produto</label>
                               </div>
 
@@ -173,7 +173,9 @@
                           </div>
                         </div>
                         <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                          <button type="button" id="new-product" class="AddProdButton btn btn-success" data-bs-dismiss="modal"> Adicionar </button>
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+
                         </div>
                       </form>
                     </div>
@@ -223,6 +225,36 @@
           });
         });
       });
+
+      document.querySelectorAll(".AddProdButton").forEach((button) => {
+          button.addEventListener("click", () => {
+            image = document.querySelector("#newmodal").querySelector("#prodimg").files[0];
+            reader = new FileReader();
+
+            reader.onload = function() { 
+              const imageb64 = reader.result.split(',')[1]            
+              $.ajax({
+              url: "/add",
+              type: "POST",
+              data: {
+                csrf_token: csrf_token,
+                type: "product",
+                id: button.id,
+                name:document.querySelector("#newmodal").querySelector("#prodname").value, 
+                price: document.querySelector("#newmodal").querySelector("#prodprice").value,
+                details: document.querySelector("#newmodal").querySelector("#proddts").value,
+                imageb64: imageb64,
+                },
+              success: function (response) {
+                console.log(response)
+                //location.reload();
+              },
+            })
+          }
+          reader.readAsDataURL(image);
+
+          });
+        });
 
       function openNav() {
         document.getElementById("mySidenav").style.width = "180px";
