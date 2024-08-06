@@ -236,7 +236,17 @@ def add():
         match request.form.get('type'):
             case 'event':
                 try:
-                    #db.collection(u'events').document(request.form.get('id')).delete()
+                    eventtoadd = eventtoadd(request.form.get('name'), request.form.get('date'), request.form.get('details'), request.form.get('imageb64'))
+                    newdoc = db.collection(u'prods').document()
+                    newdoc.set({
+                        u'name': eventtoadd.name,
+                        u'date': eventtoadd.date,
+                        u'details': eventtoadd.details,
+                        u'imglink': eventtoadd.imglink
+                    })
+
+                    #db.collection(u'prods').document(request.form.get('id')).delete()
+                    print("Received")
                     revalidate = True
                     return '200'
                 except Exception as e:
@@ -289,6 +299,17 @@ class Newproduct():
         with open(f'static/img/{self.name}.png', 'wb') as f:
             f.write(base64.b64decode(imgb64))
             self.imglink = f'{self.name}.png'
+
+class NewEvent():
+    def __init__(self, name, date, details, imgb64):
+        sanitized_name = name.replace('\\', '_')
+        self.name = sanitized_name
+        self.date = date
+        self.details = details
+        with open(f'static/img/{self.name}.png', 'wb') as f:
+            f.write(base64.b64decode(imgb64))
+            self.imglink = f'{self.name}.png'
+
 
 
 

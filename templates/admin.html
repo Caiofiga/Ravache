@@ -49,11 +49,56 @@
             style="margin-bottom: 15px; align-items: center; display: flex"
           >
             <div class="list-group-item text-center" style="left: 30%">
-              <button class="btn btn-success">+</button>
+              <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#neweventmodal">+</button>
               <h5 class="mb-1">Add Event</h5> <!-- TODO: Add modal for adding event -->
             </div>
+                            <!-- inicio do Modal -->
+                            <div class="modal fade" id="neweventmodal" tabindex="-1" role="dialog" aria-labelledby="productlabel" aria-hidden="true">
+                              <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                                <div class="modal-content">
+                                  <form class="neweventform">
+                                    <div class="modal-header">
+                                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                        <input class="mdl-textfield__input" type="text" id="eventname">
+                                        <label class="mdl-textfield__label" for="eventname">Nome do produto</label>
+                                      </div>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                      <div class="row">
+                                        
+                                        <div class="col-md-6">
+                                          <h5> Imagem do produto</h5>
+                                          <input type="file" id="eventimg" accept="image/*">
+                                        </div>
+                                        <div class="col-md-6">
+                                          <small>
+                                            <label for="eventdate">Data do Evento</label>
+                                            <div class="input-group mb-3">
+                                              <input type="date" class="form-control" id="eventdate" aria-describedby="basic-addon3">
+                                            </div>
+                                          </small>
+                                          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <textarea id="eventdts" class="mdl-textfield__input" maxlength="300" type="text" rows="5" style="resize: none;"> </textarea>
+                                            <label class="mdl-textfield__label" for="eventdts" >Detalhes do Evento</label>
+                                          </div>
+            
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" id="new-product" class="AddProdButton btn btn-success" data-bs-dismiss="modal"> Adicionar </button>
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+            
+                                    </div>
+                                  </form>
+                                </div>
+                              </div>
+                            </div>
+                            <!-- fim do Modal -->
           </div>
         </div>
+
       </section>
 
       <section id="store">
@@ -225,7 +270,6 @@
           });
         });
       });
-
       document.querySelectorAll(".AddProdButton").forEach((button) => {
           button.addEventListener("click", () => {
             image = document.querySelector("#newmodal").querySelector("#prodimg").files[0];
@@ -247,7 +291,44 @@
                 },
               success: function (response) {
                 console.log(response)
-                //location.reload();
+                setTimeout(() => {
+            location.reload();
+          }, 1000);
+              },
+            })
+          }
+          console.log(image)
+          reader.readAsDataURL(image);
+
+          });
+        });
+
+
+        document.querySelectorAll(".AddEventButton").forEach((button) => {
+          button.addEventListener("click", () => {
+            image = document.querySelector("#neweventmodal").querySelector("#eventimg").files[0];
+            console.log(image)
+            reader = new FileReader();
+
+            reader.onload = function() { 
+              const imageb64 = reader.result.split(',')[1]            
+              $.ajax({
+              url: "/add",
+              type: "POST",
+              data: {
+                csrf_token: csrf_token,
+                type: "event",
+                id: button.id,
+                name:document.querySelector("#neweventmodal").querySelector("#eventname").value, 
+                date: document.querySelector("#neweventmodal").querySelector("#eventdate").value,
+                details: document.querySelector("#neweventmodal").querySelector("#eventdts").value,
+                imageb64: imageb64,
+                },
+              success: function (response) {
+                console.log(response)
+                setTimeout(() => {
+            location.reload();
+          }, 1000);
               },
             })
           }
