@@ -1,2 +1,3 @@
 # Ignore EnviromentVariables file
 /EnviromentVariables
+.venv
