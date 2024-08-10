@@ -39,11 +39,63 @@
               <small>{{ event.date }}</small>
               <p class="mb-1">{{ event.details|first_words(5) }}</p>
               <small>{{ event.time }}</small>
-              <input type="submit" class="btn btn-primary" value="Edit"></input>
-              <input type="submit" class="btn btn-danger, deleteEventButton" name="deleteEventButton" value='Delete' id={{ event.id }}></input> <!-- TODO: Add AJAX path for deleting stuff and reloading page -->
+              <button class="btn btn-primary"                     
+              data-bs-toggle="modal"
+              data-bs-target="#{{event.id}}">Edit</button>
+              <button  class="btn btn-danger deleteEventButton" name="deleteEventButton" id="{{event.id}}" >Delete</button>
             </div>
           </div>
+              <!-- inicio do Modal -->
+              <div
+                class="modal fade"
+                id="{{event.id}}"
+                tabindex="-1"
+                role="dialog"
+                aria-labelledby="eventlabel"
+                aria-hidden="true"
+              >
+                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title d-flex w-100 justify-content-between">
+                        {{ event.name }}
+                      </h5>
+                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        
+                    </div>
+                    <div class="modal-body">
+                      <div class="row">
+                        <div class="col-md-6">
+                          <img
+                            src="{{ event.imglink }}"
+                            class="card-img-top modalimg"
+                            alt="{{ event.name }}"
+                          />
+                        </div>
+                        <div class="col-md-6">
+                          <h5>{{event.details}}<h5>
+                            <small>{{ event.price }}</small>
+                            <button class="btn btn-success modalbutton" > Comprar </button>  
+    
+                        </div>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button
+                        type="button"
+                        class="btn btn-secondary"
+                        data-bs-dismiss="modal"
+                      >
+                        Close
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <!-- fim do Modal -->
           {% endfor %}
+
+
           <div
             class="col-md-4"
             style="margin-bottom: 15px; align-items: center; display: flex"
@@ -74,7 +126,8 @@
                                         
                                         <div class="col-md-6 dragandrop" ondrop="DropHandler(event, this)" ondragover="dragOverHandler(event)">
                                           <h5> Imagem do Evento</h5>
-                                          <input class="draginput" type="file" id="eventimg" accept="image/*">
+                                          <input class="draginput" type="file" id="eventimg" accept="image/*" onchange="displayImage(this)">
+                                          <img id="displayimg" src="#" alt="imagem do produto">
                                         </div>
                                         <div class="col-md-6">
                                           <small>
@@ -127,7 +180,7 @@
             <button class="btn btn-primary"                     
             data-bs-toggle="modal"
             data-bs-target="#{{product.id}}">Edit</button>
-            <button  class="btn btn-danger, deleteProdButton" name="deleteProdButton" id="{{product.id}}" >Delete</button>
+            <button  class="btn btn-danger deleteProdButton" name="deleteProdButton" id="{{product.id}}" >Delete</button>
           </div>
               <!-- inicio do Modal -->
               <div
@@ -204,7 +257,8 @@
                             
                             <div class="col-md-6 dragandrop" ondrop="DropHandler(event, this)" ondragover="dragOverHandler(event)">
                               <h5> Imagem do produto</h5>
-                              <input class="draginput"  type="file" id="prodimg" accept="image/*">
+                              <input class="draginput"  type="file" id="prodimg" accept="image/*" onchange="displayImage(this)">
+                              <img id="displayimg" src="#" alt="imagem do produto">
                             </div>
                             <div class="col-md-6">
                               <small>
@@ -352,6 +406,17 @@
         document.getElementById("mySidenav").style.width = "0";
       }
 
+      function displayImage(input) {
+        if (input.files && input.files[0]) {
+          var reader = new FileReader();
+      
+          reader.onload = function (e) {
+            $('#displayimg').attr('src', e.target.result).width(150).height(200);
+          };
+      
+          reader.readAsDataURL(input.files[0]);
+        }
+      }
 
     function DropHandler(evt, parent) {
         evt.preventDefault();
@@ -370,6 +435,7 @@
                                 dataTransfer.items.add(file);
                                 imgElement.files = dataTransfer.files;
                                 console.log(parent.querySelector(".draginput").files[0])
+                                displayImage(parent.querySelector(".draginput"))
                             }
                         };
                         reader.onerror = function() {
