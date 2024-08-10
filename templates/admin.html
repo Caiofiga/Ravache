@@ -57,11 +57,16 @@
                               <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                                 <div class="modal-content">
                                   <form class="neweventform">
-                                    <div class="modal-header">
+                                    <div class="modal-header" style="flex-direction: row;">
                                       <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                                         <input class="mdl-textfield__input" type="text" id="eventname">
                                         <label class="mdl-textfield__label" for="eventname">Nome do Evento</label>
+                                        
                                       </div>
+                                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                      <input class="mdl-textfield__input" type="text" id="dtlink">
+                                      <label class="mdl-textfield__label" for="dtlink">link do evento</label>
+                                    </div>
                                       <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
@@ -87,7 +92,7 @@
                                       </div>
                                     </div>
                                     <div class="modal-footer">
-                                      <button type="button" id="new-product" class="AddProdButton btn btn-success" data-bs-dismiss="modal"> Adicionar </button>
+                                      <button type="button" id="new-product" class="AddEventButton btn btn-success" data-bs-dismiss="modal"> Adicionar </button>
                                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
             
                                     </div>
@@ -304,7 +309,6 @@
 
         document.querySelectorAll(".AddEventButton").forEach((button) => {
           button.addEventListener("click", () => {
-            
             image = document.querySelector("#neweventmodal").querySelector("#eventimg").files[0];
 
             reader = new FileReader();
@@ -321,6 +325,7 @@
                 name:document.querySelector("#neweventmodal").querySelector("#eventname").value, 
                 date: document.querySelector("#neweventmodal").querySelector("#eventdate").value,
                 details: document.querySelector("#neweventmodal").querySelector("#eventdts").value,
+                dtlink: document.querySelector("#neweventmodal").querySelector("#dtlink").value,
                 imageb64: imageb64,
                 },
               success: function (response) {
@@ -334,6 +339,7 @@
           reader.readAsDataURL(image);
 
           });
+          
         });
       
 

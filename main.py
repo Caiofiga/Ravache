@@ -8,7 +8,7 @@ from flask_bootstrap import Bootstrap5
 import firebase_admin
 import wtforms
 import secrets
-import os 
+import os
 from firebase_admin import credentials, db, firestore
 from google.cloud.firestore_v1.base_query import FieldFilter
 import asyncio
@@ -30,43 +30,46 @@ csrf = CSRFProtect(app)
 loginManager = LoginManager()
 loginManager.init_app(app)
 
+
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=2, max=20)])
+    username = StringField('Username', validators=[
+                           DataRequired(), Length(min=2, max=20)])
     password = PasswordField('Password', validators=[DataRequired()])
     remember = wtforms.BooleanField('Remember Me')
     submit = SubmitField('Login')
 
+
  # Fetch the service account key JSON file contents
 cred = credentials.Certificate('sheetviewerkey.json')
 
- 
 
-#user class that extends usermixins
+# user class that extends usermixins
 class User(UserMixin):
     def __init__(self, id, username, password):
         self.id = id
         self.username = username
         self.password = password
 
-
     @loginManager.user_loader
     def get(user_id):
         user_dict = db.collection(u'users').document(user_id).get()
         if user_dict.exists:
             user_data = user_dict.to_dict()
-            user = User(id=user_dict.id, username=user_data['username'], password=user_data['password'])
+            user = User(
+                id=user_dict.id, username=user_data['username'], password=user_data['password'])
             return user
         return None
+
 
 if firebase_admin._apps.__len__() == 0:
     firebase_admin.initialize_app(cred)
 db = firestore.client()
 
+
 def GetGoogleSheets():
 
-   
     prods = []
-    prodocuments =  db.collection(u'prods').stream()
+    prodocuments = db.collection(u'prods').stream()
     for document in prodocuments:
         doc_dict = document.to_dict()  # Fetch document data once to optimize
         prods.append({
@@ -100,13 +103,15 @@ def GetGoogleSheets():
         event_time = event["date"]  # Directly use the datetime object
         delta = event_time - now
         if delta < timedelta(0):
-            event['date'] = f"{event_time.day}/{event_time.month}/{event_time.year}"
+            event['date'] = f"{
+                event_time.day}/{event_time.month}/{event_time.year}"
         else:
             months = delta.days // 30  # Calculate approximate months
             days = delta.days % 30  # Calculate the remainder of days
 
             # Event is in the future and closer than any previously found
-            event['date'] = f"{months} {'month' if months <= 1 else 'months'}, {days} {'day' if days <= 1 else 'days'} from now"
+            event['date'] = f"{months} {'month' if months <= 1 else 'months'}, {
+                days} {'day' if days <= 1 else 'days'} from now"
 
     # Check if this event is the closest future event so far
             if delta < closest_delta:
@@ -131,15 +136,15 @@ def first_words(s, count=2):
     if s is not None:
         return ' '.join(s.split()[:count])
 
+
 @loginManager.unauthorized_handler
 def unauthorized():
     return redirect('/login')
 
+
 @app.route('/')
 def about():
     global events, products, checktime
-
-    
 
     if (checktime - datetime.now()) > timedelta(minutes=10):
         with data_lock:
@@ -158,6 +163,7 @@ def store():
             checktime = datetime.now()
     return render_template("loja.html", products=products)
 
+
 @app.route('/eventos')
 def events():
     global events, products, checktime
@@ -167,9 +173,11 @@ def events():
             checktime = datetime.now()
     return render_template("eventos.html", events=events)
 
+
 @app.route('/favicon.ico')
 def favicon():
     return send_file('favicon.ico', mimetype='image')
+
 
 @app.route('/admin', methods=['GET', 'POST'])
 @login_required
@@ -181,7 +189,7 @@ def admin():
         if 'deleteEventButton' in request.form:
             print(request.form['deleteEventButton'])
         else:
-            pass # unknown
+            pass  # unknown
     elif request.method == 'GET':
         if (checktime - datetime.now()) > timedelta(minutes=10) or revalidate:
             with data_lock:
@@ -191,7 +199,8 @@ def admin():
                 print('revalidated')
         if request.cookies.get('admin') == 'true':
             return render_template("admin.html", events=events, products=products)
-        else: login()
+        else:
+            login()
         return render_template("admin.html", events=events, products=products)
 
 
@@ -199,21 +208,24 @@ def admin():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        queries = db.collection(u'users').where(filter=FieldFilter("username", "==", form.username.data)).stream()
+        queries = db.collection(u'users').where(filter=FieldFilter(
+            "username", "==", form.username.data)).stream()
         user_dict = None
         for query in queries:
             user_dict = query.to_dict()
             user_dict['id'] = query.id
             break
         if user_dict is None:
-            flash ('User not found')
+            flash('User not found')
             return render_template("login.html", form=form)
         if bcrypt.check_password_hash(user_dict['password'], form.password.data):
-            user = User(user_dict['id'], user_dict['username'], user_dict['password'])
-            login_user(user, remember=form.remember.data if form.remember.data else False)
+            user = User(user_dict['id'],
+                        user_dict['username'], user_dict['password'])
+            login_user(
+                user, remember=form.remember.data if form.remember.data else False)
             if user.is_authenticated:
                 return redirect('/admin')
-        
+
     return render_template("login.html", form=form)
 
 
@@ -229,6 +241,7 @@ def logout():
     })
     return "0"
 
+
 @app.route('/add', methods=['POST'])
 def add():
     global events, products, checktime, revalidate
@@ -236,16 +249,18 @@ def add():
         match request.form.get('type'):
             case 'event':
                 try:
-                    eventtoadd = eventtoadd(request.form.get('name'), request.form.get('date'), request.form.get('details'), request.form.get('imageb64'))
-                    newdoc = db.collection(u'prods').document()
+                    eventtoadd = NewEvent(request.form.get('name'), request.form.get(
+                        'date'), request.form.get('details'), request.form.get('imageb64'), request.form.get('dtlink'))
+                    newdoc = db.collection(u'events').document()
                     newdoc.set({
                         u'name': eventtoadd.name,
                         u'date': eventtoadd.date,
                         u'details': eventtoadd.details,
-                        u'imglink': eventtoadd.imglink
+                        u'imglink': eventtoadd.imglink,
+                        u'dtlink': eventtoadd.dtlink
                     })
 
-                    #db.collection(u'prods').document(request.form.get('id')).delete()
+                    # db.collection(u'prods').document(request.form.get('id')).delete()
                     print("Received")
                     revalidate = True
                     return '200'
@@ -254,7 +269,8 @@ def add():
             case 'product':
                 try:
                     print(request.form.get('db'))
-                    prodtoadd = Newproduct(request.form.get('name'), request.form.get('price'), request.form.get('details'), request.form.get('imageb64'))
+                    prodtoadd = Newproduct(request.form.get('name'), request.form.get(
+                        'price'), request.form.get('details'), request.form.get('imageb64'))
                     newdoc = db.collection(u'prods').document()
                     newdoc.set({
                         u'name': prodtoadd.name,
@@ -263,12 +279,13 @@ def add():
                         u'imglink': prodtoadd.imglink
                     })
 
-                    #db.collection(u'prods').document(request.form.get('id')).delete()
+                    # db.collection(u'prods').document(request.form.get('id')).delete()
                     print("Received")
                     revalidate = True
                     return '200'
                 except Exception as e:
                     return 'Error 500: ' + str(e)
+
 
 @app.route('/delete', methods=['POST'])
 def delete():
@@ -277,19 +294,22 @@ def delete():
         match request.form.get('type'):
             case 'event':
                 try:
-                    db.collection(u'events').document(request.form.get('id')).delete()
+                    db.collection(u'events').document(
+                        request.form.get('id')).delete()
                     revalidate = True
                     return '200'
                 except Exception as e:
                     return 'Error 500: ' + e
             case 'product':
                 try:
-                    db.collection(u'prods').document(request.form.get('id')).delete()
+                    db.collection(u'prods').document(
+                        request.form.get('id')).delete()
                     revalidate = True
                     return '200'
                 except Exception as e:
                     return 'Error 500: ' + e
-   
+
+
 class Newproduct():
     def __init__(self, name, price, details, imgb64):
         sanitized_name = name.replace('\\', '_')
@@ -300,19 +320,17 @@ class Newproduct():
             f.write(base64.b64decode(imgb64))
             self.imglink = f'{self.name}.png'
 
+
 class NewEvent():
-    def __init__(self, name, date, details, imgb64):
+    def __init__(self, name, date, details, imgb64, dtlink):
         sanitized_name = name.replace('\\', '_')
         self.name = sanitized_name
-        self.date = date
+        self.date = datetime.strptime(date, "%Y-%m-%d")
         self.details = details
+        self.dtlink = dtlink
         with open(f'static/img/{self.name}.png', 'wb') as f:
             f.write(base64.b64decode(imgb64))
             self.imglink = f'{self.name}.png'
-
-
-
-
 
 
 if __name__ == '__main__':
