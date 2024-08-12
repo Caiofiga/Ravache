@@ -39,67 +39,79 @@
               <small>{{ event.date }}</small>
               <p class="mb-1">{{ event.details|first_words(5) }}</p>
               <small>{{ event.time }}</small>
-              <button class="btn btn-primary"    
+              <button class="btn btn-primary"
+              id = "{{event.id}}"    
               onclick="getModal(this)"   
               
               >Edit</button>
               <button  class="btn btn-danger deleteEventButton" name="deleteEventButton" id="{{event.id}}" >Delete</button>
             </div>
           </div>
-
           {% endfor %}
-              <!-- inicio do Modal -->
-              <div
-                class="modal fade"
-                id="{{event.id}}"
-                tabindex="-1"
-                role="dialog"
-                aria-labelledby="eventlabel"
-                aria-hidden="true"
-              >
-                <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-                  <div class="modal-content">
-                    <div class="modal-header">
-                      <h5 class="modal-title d-flex w-100 justify-content-between">
-                        {{ event.name }}
-                      </h5>
-                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        
-                    </div>
-                    <div class="modal-body">
-                      <div class="row">
-                        <div class="col-md-6">
-                          <img
-                            src="{{ event.imglink }}"
-                            class="card-img-top modalimg"
-                            alt="{{ event.name }}"
-                          />
-                        </div>
-                        <div class="col-md-6">
-                          <h5>{{event.details}}<h5>
-                            <small>{{ event.price }}</small>
-                            <button class="btn btn-success modalbutton" > Comprar </button>  
-    
-                        </div>
+
+           <!-- inicio do Modal -->
+    <div
+    class="modal fade eventmodalbase"
+    data-eventid="exampleModal"
+    id = "existingEventModal"
+    tabindex="-1"
+    aria-labelledby="eventlabel"
+    aria-hidden="true"
+  >
+    <div class="modal-dialog modal-dialog-centered modal-xl">
+      <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+          <div class="modal-content">
+            <form class="base">
+              <div class="modal-header" style="flex-direction: row;">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                  <input class="mdl-textfield__input" type="text" id="baseEventName">
+                  <label class="mdl-textfield__label" for="baseEventName">Nome do Evento</label>
+                  
+                </div>
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                <input class="mdl-textfield__input" type="text" id="baseEventDtlink">
+                <label class="mdl-textfield__label" for="baseEventDtlink">link do evento</label>
+              </div>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <div class="row">
+                  
+                  <div class="col-md-6 dragandrop" ondrop="DropHandler(event, this)" ondragover="dragOverHandler(event)">
+                    <h5> Imagem do Evento</h5>
+                    <input class="draginput" type="file" id="baseEventImg" accept="image/*" onchange="displayImage(this)">
+                    <img id="baseEventImgDisplay" src="#" alt="imagem do produto" style="width: 50%;">
+                  </div>
+                  <div class="col-md-6">
+                    <small>
+                      <label for="baseEventDate">Data do Evento</label>
+                      <div class="input-group mb-3">
+                        <input type="date" class="form-control" id="baseEventDate" aria-describedby="basic-addon3">
                       </div>
+                    </small>
+                    <small class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                      <label class="mdl-textfield__label" for="baseEventPrice">Preço do Produto</label>
+                      <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="baseEventPrice">
+                              <span class="mdl-textfield__error">Preço não é um número!</span>
+                    </small>
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                      <textarea id="baseEventDts" class="mdl-textfield__input" maxlength="300" type="text" rows="5" style="resize: none;"> </textarea>
+                      <label class="mdl-textfield__label" for="baseEventDts" >Detalhes do Evento</label>
                     </div>
-                    <div class="modal-footer">
-                      <button
-                        type="button"
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal"
-                      >
-                        Close
-                      </button>
-                    </div>
+
                   </div>
                 </div>
               </div>
-              <!-- fim do Modal -->
+              <div class="modal-footer">
+                <button type="button" id="existing-events" class="EditEventButton btn btn-success" data-bs-dismiss="modal"> Salvar Mudanças </button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
 
-
-
-
+              </div>
+            </form>
+          </div>
+        </div>
+  </div>
+  <!-- fim do Modal -->
 
           <div
             class="col-md-4"
@@ -466,13 +478,30 @@
         type: "GET",
         data: {
           csrf_token: csrf_token,
-          type: "event",
+          type: "events",
           id: button.id,
           },
         success: function (response) {
-          if (response.code = 200) //IDFK, fix tomorrow :)
-          console.log(response)
-        },
+          if (response.code == "200") {
+          var modal = button.parentElement.parentElement.parentElement.querySelector(".eventmodalbase")
+          date = new Date(response.date)
+          modal.dataset.eventid = button.id
+          modal.querySelector("#baseEventName").value = response.name;
+
+
+modal.querySelector("#baseEventImgDisplay").src = 'static/img/' +response.imglink;
+
+modal.querySelector("#baseEventDts").value = response.details;
+
+
+modal.querySelector("#baseEventDate").value = date.toISOString().slice(0, 10);
+
+modal.querySelector("#baseEventDtlink").value = response.dtlink;
+
+modal.querySelector("#baseEventPrice").value =parseFloat(response.price);
+          $("#existingEventModal").modal('show')
+        } 
+      },
       })
     }
 

@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, request, session, flash, send_file
+from flask import Flask, render_template, redirect, request, session, flash, send_file, jsonify
 from flask_login import LoginManager, UserMixin, login_user, login_required, logout_user
 from flask_bcrypt import Bcrypt
 from flask_wtf import FlaskForm, CSRFProtect
@@ -103,15 +103,13 @@ def GetGoogleSheets():
         event_time = event["date"]  # Directly use the datetime object
         delta = event_time - now
         if delta < timedelta(0):
-            event['date'] = f"{
-                event_time.day}/{event_time.month}/{event_time.year}"
+            event['date'] = f"{event_time.day}/{event_time.month}/{event_time.year}"
         else:
             months = delta.days // 30  # Calculate approximate months
             days = delta.days % 30  # Calculate the remainder of days
 
             # Event is in the future and closer than any previously found
-            event['date'] = f"{months} {'month' if months <= 1 else 'months'}, {
-                days} {'day' if days <= 1 else 'days'} from now"
+            event['date'] = f"{months} {'month' if months <= 1 else 'months'}, {days} {'day' if days <= 1 else 'days'} from now"
 
     # Check if this event is the closest future event so far
             if delta < closest_delta:
@@ -135,6 +133,7 @@ def GetGoogleSheets():
 def first_words(s, count=2):
     if s is not None:
         return ' '.join(s.split()[:count])
+
 
 
 @loginManager.unauthorized_handler
@@ -308,6 +307,15 @@ def delete():
                     return '200'
                 except Exception as e:
                     return 'Error 500: ' + e
+
+@app.route('/set', methods=['GET', 'POST'])
+def set():
+    if request.method == 'GET':
+        doc = db.collection(request.args.get('type')).document(request.args.get('id')).get()
+        response = doc.to_dict()
+        response["code"] = '200'
+        return jsonify(response)
+
 
 
 class Newproduct():
