@@ -3,6 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="csrf_token" content="{{ csrf_token() }}">
     <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
     <title>Admin Dashboard</title>
     <link
@@ -53,6 +54,7 @@
     <div
     class="modal fade eventmodalbase"
     data-eventid="exampleModal"
+    data-isChanged = "false"
     id = "existingEventModal"
     tabindex="-1"
     aria-labelledby="eventlabel"
@@ -103,7 +105,7 @@
                 </div>
               </div>
               <div class="modal-footer">
-                <button type="button" id="existing-events" class="EditEventButton btn btn-success" data-bs-dismiss="modal"> Salvar Mudanças </button>
+                <button type="button" id="existing-events" class="EditEventButton btn btn-success"  onclick="saveChanges(this)"> Salvar Mudanças </button>
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
 
               </div>
@@ -119,7 +121,7 @@
           >
             <div class="list-group-item text-center" style="left: 30%">
               <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#neweventmodal">+</button>
-              <h5 class="mb-1">Add Event</h5> <!-- TODO: Add modal for adding event -->
+              <h5 class="mb-1">Add Event</h5> 
             </div>
                             <!-- inicio do Modal -->
                             <div class="modal fade" id="neweventmodal" tabindex="-1" role="dialog" aria-labelledby="productlabel" aria-hidden="true">
@@ -310,202 +312,7 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script async src="https://www.tiktok.com/embed.js"></script>
-    <script>
-      const csrf_token = "{{ csrf_token() }}";
-      document.addEventListener("DOMContentLoaded", function () {
-        document.querySelectorAll(".deleteEventButton").forEach((button) => {
-          button.addEventListener("click", () => {
-            $.ajax({
-              url: "/delete",
-              type: "POST",
-              data: {
-                csrf_token: csrf_token,
-                type: "event",
-                id: button.id,
-              },
-              success: function (response) {
-                location.reload();
-              },
-            })
-          });
-        });
-        document.querySelectorAll(".deleteProdButton").forEach((button) => {
-          button.addEventListener("click", () => {
-            $.ajax({
-              url: "/delete",
-              type: "POST",
-              data: {
-                csrf_token: csrf_token,
-                type: "product",
-                id: button.id,
-              },
-              success: function (response) {
-                location.reload();
-              },
-            })
-          });
-        });
-        document.querySelectorAll(".AddProdButton").forEach((button) => {
-          button.addEventListener("click", () => {
-            image = document.querySelector("#newmodal").querySelector("#prodimg").files[0];
-            reader = new FileReader();
-
-            reader.onload = function() { 
-              const imageb64 = reader.result.split(',')[1]            
-              $.ajax({
-              url: "/add",
-              type: "POST",
-              data: {
-                csrf_token: csrf_token,
-                type: "product",
-                id: button.id,
-                name:document.querySelector("#newmodal").querySelector("#prodname").value, 
-                price: document.querySelector("#newmodal").querySelector("#prodprice").value,
-                details: document.querySelector("#newmodal").querySelector("#proddts").value,
-                imageb64: imageb64,
-                },
-              success: function (response) {
-                console.log(response)
-                setTimeout(() => {
-            location.reload();
-          }, 1000);
-              },
-            })
-          }
-          console.log(image)
-          reader.readAsDataURL(image);
-
-          });
-        });
-
-        document.querySelectorAll(".AddEventButton").forEach((button) => {
-          button.addEventListener("click", () => {
-            image = document.querySelector("#neweventmodal").querySelector("#eventimg").files[0];
-
-            reader = new FileReader();
-
-            reader.onload = function() { 
-              const imageb64 = reader.result.split(',')[1]            
-              $.ajax({
-              url: "/add",
-              type: "POST",
-              data: {
-                csrf_token: csrf_token,
-                type: "event",
-                id: button.id,
-                name:document.querySelector("#neweventmodal").querySelector("#eventname").value, 
-                date: document.querySelector("#neweventmodal").querySelector("#eventdate").value,
-                details: document.querySelector("#neweventmodal").querySelector("#eventdts").value,
-                dtlink: document.querySelector("#neweventmodal").querySelector("#dtlink").value,
-                imageb64: imageb64,
-                },
-              success: function (response) {
-                console.log(response)
-                setTimeout(() => {
-            location.reload();
-          }, 1000);
-              },
-            })
-          }
-          reader.readAsDataURL(image);
-
-          });
-          
-        });
-      
-
-      });
-
-      function openNav() {
-        document.getElementById("mySidenav").style.width = "180px";
-      }
-      function closeNav() {
-        document.getElementById("mySidenav").style.width = "0";
-      }
-
-      function displayImage(input) {
-        if (input.files && input.files[0]) {
-          var reader = new FileReader();
-      
-          reader.onload = function (e) {
-            $('#displayimg').attr('src', e.target.result).width(150).height(200);
-          };
-      
-          reader.readAsDataURL(input.files[0]);
-        }
-      }
-
-    function DropHandler(evt, parent) {
-        evt.preventDefault();
-        if (evt.dataTransfer.items) {
-            [...evt.dataTransfer.items].forEach(item => {
-                if (item.kind === 'file') {
-                    const file = item.getAsFile();
-                    if (file.type.startsWith('image/')) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            const imgElement = parent.querySelector(".draginput");
-                            console.log(imgElement)
-                            if (imgElement) {
-                                imgElement.src = e.target.result;
-                                const dataTransfer = new DataTransfer();
-                                dataTransfer.items.add(file);
-                                imgElement.files = dataTransfer.files;
-                                console.log(parent.querySelector(".draginput").files[0])
-                                displayImage(parent.querySelector(".draginput"))
-                            }
-                        };
-                        reader.onerror = function() {
-                            console.error("Error reading file");
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                }
-            });
-        }
-    }
-  
-    function dragOverHandler(ev) {
-      console.log("File(s) in drop zone");
-    
-      // Prevent default behavior (Prevent file from being opened)
-      ev.preventDefault();
-    }
-    
-    function getModal(button){
-      $.ajax({
-        url: "/set",
-        type: "GET",
-        data: {
-          csrf_token: csrf_token,
-          type: "events",
-          id: button.id,
-          },
-        success: function (response) {
-          if (response.code == "200") {
-          var modal = button.parentElement.parentElement.parentElement.querySelector(".eventmodalbase")
-          date = new Date(response.date)
-          modal.dataset.eventid = button.id
-          modal.querySelector("#baseEventName").value = response.name;
-
-
-modal.querySelector("#baseEventImgDisplay").src = 'static/img/' +response.imglink;
-
-modal.querySelector("#baseEventDts").value = response.details;
-
-
-modal.querySelector("#baseEventDate").value = date.toISOString().slice(0, 10);
-
-modal.querySelector("#baseEventDtlink").value = response.dtlink;
-
-modal.querySelector("#baseEventPrice").value =parseFloat(response.price);
-          $("#existingEventModal").modal('show')
-        } 
-      },
-      })
-    }
-
-    </script>
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
     <small class="rainbow-text">produzido por Caio F</small>
 
