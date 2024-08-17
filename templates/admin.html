@@ -50,6 +50,70 @@
           </div>
           {% endfor %}
 
+          <div
+          class="col-md-4"
+          style="margin-bottom: 15px; align-items: center; display: flex"
+        >
+        <div
+        class="col-md-4"
+        style="margin-bottom: 15px; align-items: center; display: flex"
+      >
+        <div class="list-group-item text-center" style="left: 30%">
+          <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#neweventmodal">+</button>
+          <h5 class="mb-1">Add Event</h5> 
+        </div>
+                        <!-- inicio do Modal -->
+                        <div class="modal fade" id="neweventmodal" tabindex="-1" role="dialog" aria-labelledby="productlabel" aria-hidden="true">
+                          <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
+                            <div class="modal-content">
+                              <form class="neweventform">
+                                <div class="modal-header" style="flex-direction: row;">
+                                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                    <input class="mdl-textfield__input" type="text" id="eventname">
+                                    <label class="mdl-textfield__label" for="eventname">Nome do Evento</label>
+                                    
+                                  </div>
+                                  <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                  <input class="mdl-textfield__input" type="text" id="dtlink">
+                                  <label class="mdl-textfield__label" for="dtlink">link do evento</label>
+                                </div>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                  <div class="row">
+                                    
+                                    <div class="col-md-6 dragandrop" ondrop="DropHandler(event, this)" ondragover="dragOverHandler(event)">
+                                      <h5> Imagem do Evento</h5>
+                                      <input class="draginput" type="file" id="eventimg" accept="image/*" onchange="displayImage(this)">
+                                      <img id="displayimg" src="#" alt="imagem do produto">
+                                    </div>
+                                    <div class="col-md-6">
+                                      <small>
+                                        <label for="eventdate">Data do Evento</label>
+                                        <div class="input-group mb-3">
+                                          <input type="date" class="form-control" id="eventdate" aria-describedby="basic-addon3">
+                                        </div>
+                                      </small>
+                                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                        <textarea id="eventdts" class="mdl-textfield__input" maxlength="300" type="text" rows="5" style="resize: none;"> </textarea>
+                                        <label class="mdl-textfield__label" for="eventdts" >Detalhes do Evento</label>
+                                      </div>
+        
+                                    </div>
+                                  </div>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" id="new-product" class="AddEventButton btn btn-success" data-bs-dismiss="modal"> Adicionar </button>
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+        
+                                </div>
+                              </form>
+                            </div>
+                          </div>
+                        </div>
+                        <!-- fim do Modal -->
+
+          
            <!-- inicio do Modal -->
     <div
     class="modal fade eventmodalbase"

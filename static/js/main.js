@@ -176,7 +176,6 @@ $.ajax({
     modal.dataset.eventid = button.id
     modal.querySelector("#baseEventName").value = response.name;
 
-
 modal.querySelector("#baseEventImgDisplay").src = 'static/img/' +response.imglink;
 
 modal.querySelector("#baseEventDts").value = response.details;
@@ -192,19 +191,42 @@ modal.querySelector("#baseEventPrice").value =parseFloat(response.price);
 },
 })
 }
-function HandleBaseFormChange(form){
-    var modal = form.parentElement.parentElement.parentElement.parentElement 
-    modal.dataset.isChanged = "true"
-    console.log(modal.id)
 
-}
 
 function saveChanges(button){
 
-    var form  = button.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement
+    var modal  = button.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement
     console.log(modal.id) // I also dont know what to do here 6
-//Get the modal overral parent, and check the changed flag
- if (modal.dataset.IsChanged){
+
+    image = modal.querySelector("#eventimg").files[0];
+    if (image == undefined) {image = modal.querySelector("#baseEventImgDisplay").src}
+
+    reader = new FileReader();
+
+    reader.onload = function() { 
+      console.log("starting ajax")
+      const imageb64 = reader.result.split(',')[1]            
+      $.ajax({
+      url: "/update",
+      type: "POST",
+      data: {
+        csrf_token: csrf_token,
+        type: "event",
+        id: button.id,
+        name:modal.querySelector("#eventname").value, 
+        date: modal.querySelector("#eventdate").value,
+        details: modal.querySelector("#eventdts").value,
+        dtlink: modal.querySelector("#dtlink").value,
+        imageb64: imageb64,
+        },
+      success: function (response) {
+        console.log(response)
+        setTimeout(() => {
+  }, 1000);
+      },
+    })
+  }
+  reader.readAsDataURL(image);
     //pass an ajax request again
- }
+ 
 }

@@ -316,7 +316,11 @@ def set():
         response["code"] = '200'
         return jsonify(response)
 
-
+@app.route('/update', methods=['POST'])
+def update():
+    if request.method == 'POST':
+        print(request.args.get('name'))
+    return 0
 
 class Newproduct():
     def __init__(self, name, price, details, imgb64):
