@@ -192,14 +192,25 @@ modal.querySelector("#baseEventPrice").value =parseFloat(response.price);
 })
 }
 
+async function GetFilefromURL(url) {
 
-function saveChanges(button){
+  const response = await fetch(url);
+  const data = await response.blob();
+  return new File([data], data.name, {
+    type: data.type || data.type,
+  });
+}
+
+async function saveChanges(button){
 
     var modal  = button.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement
     console.log(modal.id) // I also dont know what to do here 6
 
-    image = modal.querySelector("#eventimg").files[0];
-    if (image == undefined) {image = modal.querySelector("#baseEventImgDisplay").src}
+    imageurl = modal.querySelector("#eventimg").files[0];
+    if (imageurl == undefined) {imageurl = modal.querySelector("#baseEventImgDisplay").src}
+
+    let image = await GetFilefromURL(imageurl)
+    console.log(image)
 
     reader = new FileReader();
 
@@ -211,12 +222,12 @@ function saveChanges(button){
       type: "POST",
       data: {
         csrf_token: csrf_token,
-        type: "event",
-        id: button.id,
-        name:modal.querySelector("#eventname").value, 
-        date: modal.querySelector("#eventdate").value,
-        details: modal.querySelector("#eventdts").value,
-        dtlink: modal.querySelector("#dtlink").value,
+        type: modal.dataset.type, //TODO: Add this shit
+        id: modal.dataset.eventid,
+        name:modal.querySelector("#baseEventName").value, 
+        date: modal.querySelector("#baseEventDate").value,
+        details: modal.querySelector("#baseEventDts").value,
+        dtlink: modal.querySelector("#baseEventDtlink").value,
         imageb64: imageb64,
         },
       success: function (response) {

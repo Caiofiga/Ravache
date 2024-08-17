@@ -103,13 +103,15 @@ def GetGoogleSheets():
         event_time = event["date"]  # Directly use the datetime object
         delta = event_time - now
         if delta < timedelta(0):
-            event['date'] = f"{event_time.day}/{event_time.month}/{event_time.year}"
+            event['date'] = f"{
+                event_time.day}/{event_time.month}/{event_time.year}"
         else:
             months = delta.days // 30  # Calculate approximate months
             days = delta.days % 30  # Calculate the remainder of days
 
             # Event is in the future and closer than any previously found
-            event['date'] = f"{months} {'month' if months <= 1 else 'months'}, {days} {'day' if days <= 1 else 'days'} from now"
+            event['date'] = f"{months} {'month' if months <= 1 else 'months'}, {
+                days} {'day' if days <= 1 else 'days'} from now"
 
     # Check if this event is the closest future event so far
             if delta < closest_delta:
@@ -133,7 +135,6 @@ def GetGoogleSheets():
 def first_words(s, count=2):
     if s is not None:
         return ' '.join(s.split()[:count])
-
 
 
 @loginManager.unauthorized_handler
@@ -248,7 +249,7 @@ def add():
         match request.form.get('type'):
             case 'event':
                 try:
-                    eventtoadd = NewEvent(request.form.get('name'), request.form.get(
+                    eventtoadd = NewEvent(request.form.get('name'), request.form.get('price'), request.form.get(
                         'date'), request.form.get('details'), request.form.get('imageb64'), request.form.get('dtlink'))
                     newdoc = db.collection(u'events').document()
                     newdoc.set({
@@ -308,19 +309,56 @@ def delete():
                 except Exception as e:
                     return 'Error 500: ' + e
 
+
 @app.route('/set', methods=['GET', 'POST'])
 def set():
     if request.method == 'GET':
-        doc = db.collection(request.args.get('type')).document(request.args.get('id')).get()
+        doc = db.collection(request.args.get('type')).document(
+            request.args.get('id')).get()
         response = doc.to_dict()
         response["code"] = '200'
         return jsonify(response)
 
+
 @app.route('/update', methods=['POST'])
 def update():
     if request.method == 'POST':
-        print(request.args.get('name'))
-    return 0
+        match request.form.get('type'):
+            case 'event':
+                try:
+                    updatedevent = NewEvent(request.form.get('name'), request.form.get("price"), request.form.get(
+                        'date'), request.form.get('details'), request.form.get('imageb64'),
+                        request.form.get('dtlink'))
+
+                    doc = db.collection('events').document(
+                        request.form.get('id'))
+                    doc.update({
+                        u'name': updatedevent.name,
+                        u'date': updatedevent.date,
+                        u'details': updatedevent.details,
+                        u'imglink': updatedevent.imglink,
+                        u'dtlink': updatedevent.dtlink,
+                        u'price': updatedevent.price,
+                    })
+                    return "0"
+                except Exception as e:
+                    return 'Error 500: ' + str(e)
+            case 'prods':
+                try:
+                    updateddoc = Newproduct(request.form.get('name'), request.form.get(
+                        'price'), request.form.get('details'), request.form.get('imageb64'))
+                    doc = db.collection(request.form.get('type')).document(
+                        request.form.get('id'))
+                    doc.update({
+                        u'name': updateddoc.name,
+                        u'price': updateddoc.price,
+                        u'details': updateddoc.details,
+                        u'imglink': updateddoc.imglink
+                    })
+                    return "0"
+                except Exception as e:
+                    return 'Error 500: ' + str(e)
+
 
 class Newproduct():
     def __init__(self, name, price, details, imgb64):
@@ -334,10 +372,11 @@ class Newproduct():
 
 
 class NewEvent():
-    def __init__(self, name, date, details, imgb64, dtlink):
+    def __init__(self, name, price, date, details, imgb64, dtlink):
         sanitized_name = name.replace('\\', '_')
         self.name = sanitized_name
         self.date = datetime.strptime(date, "%Y-%m-%d")
+        self.price = price
         self.details = details
         self.dtlink = dtlink
         with open(f'static/img/{self.name}.png', 'wb') as f:
