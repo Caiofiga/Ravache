@@ -166,7 +166,7 @@ $.ajax({
   type: "GET",
   data: {
     csrf_token: csrf_token,
-    type: "events",
+    type: button.parentElement.parentElement.parentElement.parentElement.id, //Button is not the modal one. Remeber that
     id: button.id,
     },
   success: function (response) {
@@ -174,6 +174,7 @@ $.ajax({
     var modal = button.parentElement.parentElement.parentElement.querySelector(".eventmodalbase")
     date = new Date(response.date)
     modal.dataset.eventid = button.id
+    modal.dataset.type = response.type
     modal.querySelector("#baseEventName").value = response.name;
 
 modal.querySelector("#baseEventImgDisplay").src = 'static/img/' +response.imglink;
@@ -206,10 +207,15 @@ async function saveChanges(button){
     var modal  = button.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement
     console.log(modal.id) // I also dont know what to do here 6
 
-    imageurl = modal.querySelector("#eventimg").files[0];
-    if (imageurl == undefined) {imageurl = modal.querySelector("#baseEventImgDisplay").src}
+    image = modal.querySelector("#baseEventImg").files[0];
+    console.log(image)
+    if (image == undefined) {
+      imageurl = modal.querySelector("#baseEventImgDisplay").src
+      console.error("NULLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL")
+      let image = await GetFilefromURL(imageurl)
+    }
 
-    let image = await GetFilefromURL(imageurl)
+    
     console.log(image)
 
     reader = new FileReader();
@@ -221,14 +227,15 @@ async function saveChanges(button){
       url: "/update",
       type: "POST",
       data: {
+        type: modal.dataset.type,
         csrf_token: csrf_token,
-        type: modal.dataset.type, //TODO: Add this shit
         id: modal.dataset.eventid,
         name:modal.querySelector("#baseEventName").value, 
         date: modal.querySelector("#baseEventDate").value,
         details: modal.querySelector("#baseEventDts").value,
         dtlink: modal.querySelector("#baseEventDtlink").value,
         imageb64: imageb64,
+        price:modal.querySelector("#baseEventPrice").value,
         },
       success: function (response) {
         console.log(response)

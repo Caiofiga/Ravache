@@ -139,6 +139,7 @@ body {
 
 .rainbow-text {
   background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+  background-clip: text;
   -webkit-background-clip: text;
   color: transparent;
   animation: rainbow-animation 3s linear infinite;
