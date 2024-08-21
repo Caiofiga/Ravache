@@ -169,7 +169,7 @@ $.ajax({
   type: "GET",
   data: {
     csrf_token: csrf_token,
-    type: button.parentElement.parentElement.parentElement.parentElement.id, //Button is not the modal one. Remeber that
+    type: button.dataset.type, //Button is not the modal one. Remeber that
     id: button.id,
     },
   success: function (response) {
