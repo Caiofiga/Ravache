@@ -59,8 +59,8 @@
         style="margin-bottom: 15px; align-items: center; display: flex"
       >
         <div class="list-group-item text-center" style="left: 30%">
-          <button class="btn btn-success" onclick="">+</button>
-          <h5 class="mb-1" >Add Event</h5> 
+          <button class="btn btn-success" onclick="getModal(this,'events', true)">+</button>
+          <h5 class="mb-1"  >Add Event</h5> 
         </div>
           
            <!-- inicio do Modal de eventos existentes-->
@@ -135,7 +135,7 @@
           >
             <div class="list-group-item text-center" style="left: 30%">
               <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#neweventmodal">+</button>
-              <h5 class="mb-1">Add Event</h5> 
+              <h5 class="mb-1" onclick="getModal(this, true)">Add Event</h5> 
             </div>
                             <!-- inicio do Modal -->
                             <div class="modal fade" id="neweventmodal" tabindex="-1" role="dialog" aria-labelledby="productlabel" aria-hidden="true">

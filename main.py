@@ -38,7 +38,6 @@ class LoginForm(FlaskForm):
     remember = wtforms.BooleanField('Remember Me')
     submit = SubmitField('Login')
 
-
  # Fetch the service account key JSON file contents
 cred = credentials.Certificate('sheetviewerkey.json')
 
@@ -103,13 +102,15 @@ def GetGoogleSheets():
         event_time = event["date"]  # Directly use the datetime object
         delta = event_time - now
         if delta < timedelta(0):
-            event['date'] = f"{event_time.day}/{event_time.month}/{event_time.year}"
+            event['date'] = f"{
+                event_time.day}/{event_time.month}/{event_time.year}"
         else:
             months = delta.days // 30  # Calculate approximate months
             days = delta.days % 30  # Calculate the remainder of days
 
             # Event is in the future and closer than any previously found
-            event['date'] = f"{months} {'month' if months <= 1 else 'months'}, {days} {'day' if days <= 1 else 'days'} from now"
+            event['date'] = f"{months} {'month' if months <= 1 else 'months'}, {
+                days} {'day' if days <= 1 else 'days'} from now"
 
     # Check if this event is the closest future event so far
             if delta < closest_delta:
@@ -329,17 +330,27 @@ def update():
                     updatedevent = NewEvent(request.form.get('name'), request.form.get("price"), request.form.get(
                         'date'), request.form.get('details'), request.form.get('imageb64'),
                         request.form.get('dtlink'))
-
-                    doc = db.collection('events').document(
-                        request.form.get('id'))
-                    doc.update({
-                        u'name': updatedevent.name,
-                        u'date': updatedevent.date,
-                        u'details': updatedevent.details,
-                        u'imglink': updatedevent.imglink,
-                        u'dtlink': updatedevent.dtlink,
-                        u'price': updatedevent.price,
-                    })
+                    if (request.form.get('id') != 'new'):
+                        doc = db.collection('events').document(
+                            request.form.get('id'))
+                        doc.update({
+                            u'name': updatedevent.name,
+                            u'date': updatedevent.date,
+                            u'details': updatedevent.details,
+                            u'imglink': updatedevent.imglink,
+                            u'dtlink': updatedevent.dtlink,
+                            u'price': updatedevent.price,
+                        })
+                    else:
+                        doc = db.collection('events').document()
+                        doc.set({
+                            u'name': updatedevent.name,
+                            u'date': updatedevent.date,
+                            u'details': updatedevent.details,
+                            u'imglink': updatedevent.imglink,
+                            u'dtlink': updatedevent.dtlink,
+                            u'price': updatedevent.price,
+                        })
                     revalidate = True
                     return "0"
                 except Exception as e:
@@ -360,6 +371,8 @@ def update():
                     return "0"
                 except Exception as e:
                     return 'Error 500: ' + str(e)
+            case _:
+                return 'Error 500: Unknown type: ' + request.form.get('type')
 
 
 class Newproduct():

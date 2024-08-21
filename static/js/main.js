@@ -160,7 +160,7 @@ console.log("File(s) in drop zone");
 ev.preventDefault();
 }
 
-function getModal(button, newthing = false){
+function getModal(button, type = undefined,newthing = false){
   const modal = button.parentElement.parentElement.parentElement.querySelector(".eventmodalbase")
 
   if (!newthing){ //Data alredy exists in DB, need to fetch 
@@ -177,31 +177,34 @@ $.ajax({
     date = new Date(response.date)
     modal.dataset.eventid = button.id
     modal.dataset.type = response.type
-    modal.querySelector("#baseEventName").value = response.name;
+    modal.querySelector("#EventName").value = response.name;
 
-modal.querySelector("#baseEventImgDisplay").src = 'static/img/' +response.imglink;
+modal.querySelector("#EventImgDisplay").src = 'static/img/' +response.imglink;
 
-modal.querySelector("#baseEventDts").value = response.details;
+modal.querySelector("#EventDts").value = response.details;
 
 
-modal.querySelector("#baseEventDate").value = date.toISOString().slice(0, 10);
+modal.querySelector("#EventDate").value = date.toISOString().slice(0, 10);
 
-modal.querySelector("#baseEventDtlink").value = response.dtlink;
+modal.querySelector("#EventDtlink").value = response.dtlink;
 
-modal.querySelector("#baseEventPrice").value =parseFloat(response.price);
-    $("#existingEventModal").modal('show')
+modal.querySelector("#EventPrice").value =parseFloat(response.price);
+    $("#EventModal").modal('show')
   } 
 },
 })
 }
 else { //Nothing in DB, need to clear modal 
-modal.querySelector("#baseEventName").value = "";
-modal.querySelector("#baseEventImgDisplay").src = undefined;
-modal.querySelector("#baseEventDts").value = "";
-modal.querySelector("#baseEventDate").value = "";
-if (modal.querySelector("#baseEventDtlink")) modal.querySelector("#baseEventDtlink").value = ""; //dtlink only exists on events
-modal.querySelector("#baseEventPrice").value = "";
-$("#newEventModal").modal('show')
+modal.dataset.eventid = "new"
+modal.dataset.type = type
+  console.log("newthing")
+modal.querySelector("#EventName").value = "";
+modal.querySelector("#EventImgDisplay").src = undefined;
+modal.querySelector("#EventDts").value = "";
+modal.querySelector("#EventDate").value = "";
+if (modal.querySelector("#EventDtlink")) modal.querySelector("#EventDtlink").value = ""; //dtlink only exists on events
+modal.querySelector("#EventPrice").value = "";
+$("#EventModal").modal('show')
 
 }
 }
@@ -220,12 +223,12 @@ async function saveChanges(button){
     var modal  = button.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement
     console.log(modal.id) // I also dont know what to do here 6
 
-    image = modal.querySelector("#baseEventImg").files[0];
+    image = modal.querySelector("#EventImg").files[0];
     console.log(image)
     if (image == undefined) {
-      imageurl = modal.querySelector("#baseEventImgDisplay").src
+      imageurl = modal.querySelector("#EventImgDisplay").src
       console.error("NULLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL")
-      let image = await GetFilefromURL(imageurl)
+    image = await GetFilefromURL(imageurl)
     }
 
     
@@ -243,16 +246,17 @@ async function saveChanges(button){
         type: modal.dataset.type,
         csrf_token: csrf_token,
         id: modal.dataset.eventid,
-        name:modal.querySelector("#baseEventName").value, 
-        date: modal.querySelector("#baseEventDate").value,
-        details: modal.querySelector("#baseEventDts").value,
-        dtlink: modal.querySelector("#baseEventDtlink").value,
+        name:modal.querySelector("#EventName").value, 
+        date: modal.querySelector("#EventDate").value,
+        details: modal.querySelector("#EventDts").value,
+        dtlink: modal.querySelector("#EventDtlink").value,
         imageb64: imageb64,
-        price:modal.querySelector("#baseEventPrice").value,
+        price:modal.querySelector("#EventPrice").value,
         },
       success: function (response) {
         console.log(response)
         setTimeout(() => {
+          location.reload();
   }, 1000);
       },
     })
