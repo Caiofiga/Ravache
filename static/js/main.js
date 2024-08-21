@@ -160,7 +160,10 @@ console.log("File(s) in drop zone");
 ev.preventDefault();
 }
 
-function getModal(button){
+function getModal(button, newthing = false){
+  const modal = button.parentElement.parentElement.parentElement.querySelector(".eventmodalbase")
+
+  if (!newthing){ //Data alredy exists in DB, need to fetch 
 $.ajax({
   url: "/set",
   type: "GET",
@@ -171,7 +174,6 @@ $.ajax({
     },
   success: function (response) {
     if (response.code == "200") {
-    var modal = button.parentElement.parentElement.parentElement.querySelector(".eventmodalbase")
     date = new Date(response.date)
     modal.dataset.eventid = button.id
     modal.dataset.type = response.type
@@ -191,6 +193,17 @@ modal.querySelector("#baseEventPrice").value =parseFloat(response.price);
   } 
 },
 })
+}
+else { //Nothing in DB, need to clear modal 
+modal.querySelector("#baseEventName").value = "";
+modal.querySelector("#baseEventImgDisplay").src = undefined;
+modal.querySelector("#baseEventDts").value = "";
+modal.querySelector("#baseEventDate").value = "";
+if (modal.querySelector("#baseEventDtlink")) modal.querySelector("#baseEventDtlink").value = ""; //dtlink only exists on events
+modal.querySelector("#baseEventPrice").value = "";
+$("#newEventModal").modal('show')
+
+}
 }
 
 async function GetFilefromURL(url) {
