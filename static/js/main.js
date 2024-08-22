@@ -267,49 +267,90 @@ async function GetFilefromURL(url) {
 }
 
 async function saveChanges(button){
+  var modal  = button.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement
 
-    var modal  = button.parentElement.parentElement.parentElement.parentElement.parentElement.parentElement
-    console.log(modal.id) // I also dont know what to do here 6
+    // I also need a switch here yeeeeee
+    switch (modal.dataset.type){
 
-    image = modal.querySelector("#EventImg").files[0];
-    console.log(image)
-    if (image == undefined) {
-      imageurl = modal.querySelector("#EventImgDisplay").src
-      console.error("NULLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL")
-    image = await GetFilefromURL(imageurl)
+      case "events":
+
+      image = modal.querySelector("#EventImg").files[0];
+      console.log(image)
+      if (image == undefined) {
+        imageurl = modal.querySelector("#EventImgDisplay").src
+      image = await GetFilefromURL(imageurl)
+      }
+  
+      
+      console.log(image)
+  
+      reader = new FileReader();
+  
+      reader.onload = function() { 
+        console.log("starting ajax")
+        const imageb64 = reader.result.split(',')[1]            
+        $.ajax({
+        url: "/update",
+        type: "POST",
+        data: {
+          type: modal.dataset.type,
+          csrf_token: csrf_token,
+          id: modal.dataset.eventid,
+          name:modal.querySelector("#EventName").value, 
+          date: modal.querySelector("#EventDate").value,
+          details: modal.querySelector("#EventDts").value,
+          dtlink: modal.querySelector("#EventDtlink").value,
+          imageb64: imageb64,
+          price:modal.querySelector("#EventPrice").value,
+          },
+        success: function (response) {
+          console.log(response)
+          setTimeout(() => {
+            location.reload();
+    }, 1000);
+        },
+      })
+    }
+    reader.readAsDataURL(image);
+
+        break;
+      case "prods":
+
+
+      image = modal.querySelector("#ProdImg").files[0];
+      if (image == undefined) {
+        imageurl = modal.querySelector("#ProdImgDisplay").src
+      image = await GetFilefromURL(imageurl)
+      }
+  
+  
+      reader = new FileReader();
+  
+      reader.onload = function() { 
+        const imageb64 = reader.result.split(',')[1]            
+        $.ajax({
+        url: "/update",
+        type: "POST",
+        data: {
+          type: modal.dataset.type,
+          csrf_token: csrf_token,
+          id: modal.dataset.eventid,
+          name:modal.querySelector("#ProdName").value, 
+          details: modal.querySelector("#ProdDts").value,
+          imageb64: imageb64,
+          price:modal.querySelector("#ProdPrice").value,
+          },
+        success: function (response) {
+          console.log(response)
+          setTimeout(() => {
+            location.reload();
+    }, 1000);
+        },
+      })
+    }
+    reader.readAsDataURL(image);
+        break;
     }
 
-    
-    console.log(image)
-
-    reader = new FileReader();
-
-    reader.onload = function() { 
-      console.log("starting ajax")
-      const imageb64 = reader.result.split(',')[1]            
-      $.ajax({
-      url: "/update",
-      type: "POST",
-      data: {
-        type: modal.dataset.type,
-        csrf_token: csrf_token,
-        id: modal.dataset.eventid,
-        name:modal.querySelector("#EventName").value, 
-        date: modal.querySelector("#EventDate").value,
-        details: modal.querySelector("#EventDts").value,
-        dtlink: modal.querySelector("#EventDtlink").value,
-        imageb64: imageb64,
-        price:modal.querySelector("#EventPrice").value,
-        },
-      success: function (response) {
-        console.log(response)
-        setTimeout(() => {
-          location.reload();
-  }, 1000);
-      },
-    })
-  }
-  reader.readAsDataURL(image);
-    //pass an ajax request again
  
 }

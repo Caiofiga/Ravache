@@ -354,6 +354,7 @@ def update():
                 except Exception as e:
                     return 'Error 500: ' + str(e)
             case 'prods':
+                print(request.args)
                 try:
                     updateddoc = Newproduct(request.form.get('name'), request.form.get(
                         'price'), request.form.get('details'), request.form.get('imageb64'))

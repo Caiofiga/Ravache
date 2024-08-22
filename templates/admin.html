@@ -144,7 +144,7 @@
 
       </section>
 
-      <section id="prods">
+      <section id="prods" data-type="prods" >
         <h2>Store</h2>
         <div class="row">
           {% for product in products%}
@@ -167,7 +167,6 @@
 
           {% endfor %}
               <!-- inicio do Modal de produtos -->
-               <!-- TODO: fix id duplicated in events and prods modal-->
               <div
                 class="modal fade eventmodalbase"
                 id="ProdModal"
@@ -182,9 +181,12 @@
                 <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
+                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+
                       <input class="mdl-textfield__input" type="text" id="ProdName">
                       <label class="mdl-textfield__label" for="ProdName">Nome do Produto</label>
-                      
+                      </div>
+                    
                     </div>
                     <div class="modal-body">
                       <div class="row">
