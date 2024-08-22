@@ -60,7 +60,7 @@
         style="margin-bottom: 15px; align-items: center; display: flex"
       >
         <div class="list-group-item text-center" style="left: 30%">
-          <button  data-type="events" class="btn btn-success" onclick="getModal(this,'events', true)">+</button>
+          <button  data-type="events" class="btn btn-success" onclick="getModal(this, true)">+</button>
           <h5 class="mb-1"  >Add Event</h5> 
         </div>
           
@@ -138,56 +138,7 @@
               <button class="btn btn-success" data-bs-toggle="modal" data-bs-target="#neweventmodal">+</button>
               <h5 class="mb-1" onclick="getModal(this, true)">Add Event</h5> 
             </div>
-                            <!-- inicio do Modal -->
-                            <div class="modal fade" id="neweventmodal" tabindex="-1" role="dialog" aria-labelledby="productlabel" aria-hidden="true">
-                              <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-                                <div class="modal-content">
-                                  <form class="neweventform">
-                                    <div class="modal-header" style="flex-direction: row;">
-                                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                        <input class="mdl-textfield__input" type="text" id="eventname">
-                                        <label class="mdl-textfield__label" for="eventname">Nome do Evento</label>
-                                        
-                                      </div>
-                                      <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                      <input class="mdl-textfield__input" type="text" id="dtlink">
-                                      <label class="mdl-textfield__label" for="dtlink">link do evento</label>
-                                    </div>
-                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                                    </div>
-                                    <div class="modal-body">
-                                      <div class="row">
-                                        
-                                        <div class="col-md-6 dragandrop" ondrop="DropHandler(event, this)" ondragover="dragOverHandler(event)">
-                                          <h5> Imagem do Evento</h5>
-                                          <input class="draginput" type="file" id="eventimg" accept="image/*" onchange="displayImage(this)">
-                                          <img id="displayimg" src="#" alt="imagem do produto">
-                                        </div>
-                                        <div class="col-md-6">
-                                          <small>
-                                            <label for="eventdate">Data do Evento</label>
-                                            <div class="input-group mb-3">
-                                              <input type="date" class="form-control" id="eventdate" aria-describedby="basic-addon3">
-                                            </div>
-                                          </small>
-                                          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                            <textarea id="eventdts" class="mdl-textfield__input" maxlength="300" type="text" rows="5" style="resize: none;"> </textarea>
-                                            <label class="mdl-textfield__label" for="eventdts" >Detalhes do Evento</label>
-                                          </div>
-            
-                                        </div>
-                                      </div>
-                                    </div>
-                                    <div class="modal-footer">
-                                      <button type="button" id="new-product" class="AddEventButton btn btn-success" data-bs-dismiss="modal"> Adicionar </button>
-                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-            
-                                    </div>
-                                  </form>
-                                </div>
-                              </div>
-                            </div>
-                            <!-- fim do Modal -->
+
           </div>
         </div>
 
@@ -219,7 +170,7 @@
                <!-- TODO: fix id duplicated in events and prods modal-->
               <div
                 class="modal fade eventmodalbase"
-                id="EventModal"
+                id="ProdModal"
                 tabindex="-1"
                 role="dialog"
                 aria-labelledby="productlabel"
@@ -231,32 +182,32 @@
                 <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
                   <div class="modal-content">
                     <div class="modal-header">
-                      <input class="mdl-textfield__input" type="text" id="EventName">
-                      <label class="mdl-textfield__label" for="EventName">Nome do Produto</label>
+                      <input class="mdl-textfield__input" type="text" id="ProdName">
+                      <label class="mdl-textfield__label" for="ProdName">Nome do Produto</label>
                       
                     </div>
                     <div class="modal-body">
                       <div class="row">
                         <div class="col-md-6 dragandrop" ondrop="DropHandler(event, this)" ondragover="dragOverHandler(event)">
                           <h5> Imagem do Produto</h5>
-                          <input class="draginput" type="file" id="EventImg" accept="image/*" onchange="displayImage(this)">
-                          <img id="EventImgDisplay" src="#" alt="imagem do produto" style="width: 50%;">
+                          <input class="draginput" type="file" id="ProdImg" accept="image/*" onchange="displayImage(this)">
+                          <img id="ProdImgDisplay" src="#" alt="imagem do produto" style="width: 50%;">
                         </div>
                         <div class="col-md-6">
                           <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <textarea id="EventDts" class="mdl-textfield__input" maxlength="300" type="text" rows="5" style="resize: none;"> </textarea>
-                            <label class="mdl-textfield__label" for="EventDts" >Detalhes do Evento</label>
+                            <textarea id="ProdDts" class="mdl-textfield__input" maxlength="300" type="text" rows="5" style="resize: none;"> </textarea>
+                            <label class="mdl-textfield__label" for="ProdDts" >Detalhes do Evento</label>
                           </div>
                           <small class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <label class="mdl-textfield__label" for="EventPrice">Preço do Produto</label>
-                            <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="EventPrice">
+                            <label class="mdl-textfield__label" for="ProdPrice">Preço do Produto</label>
+                            <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="ProdPrice">
                                     <span class="mdl-textfield__error">Preço não é um número!</span>
                           </small>    
                         </div>
                       </div>
                     </div>
                     <div class="modal-footer">
-                      <button type="button" id="existing-events" class="SaveEventButton btn btn-success"  onclick="saveChanges(this)"> Salvar Mudanças </button>
+                      <button type="button" id="existing-prods" class="SaveEventButton btn btn-success"  onclick="saveChanges(this)"> Salvar Mudanças </button>
                       <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
       
                     </div>
@@ -271,55 +222,9 @@
             style="margin-bottom: 15px; align-items: center; display: flex"
           >
             <div class="list-group-item text-center" style="left: 30%">
-              <button class="btn btn-success" data-type="prods" onclick="">+</button>
-              <h5 class="mb-1" onclick="">Add product</h5>
+              <button class="btn btn-success" data-type="prods" onclick="getModal(this, true)">+</button>
+              <h5 class="mb-1">Add product</h5>
             </div>
-                <!-- inicio do Modal -->
-                <div class="modal fade" id="newmodal" tabindex="-1" role="dialog" aria-labelledby="productlabel" aria-hidden="true">
-                  <div class="modal-dialog modal-dialog-centered modal-xl" role="document">
-                    <div class="modal-content">
-                      <form class="newprodform">
-                        <div class="modal-header">
-                          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                            <input class="mdl-textfield__input" type="text" id="prodname">
-                            <label class="mdl-textfield__label" for="prodname">Nome do produto</label>
-                          </div>
-                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                          <div class="row">
-                            
-                            <div class="col-md-6 dragandrop" ondrop="DropHandler(event, this)" ondragover="dragOverHandler(event)">
-                              <h5> Imagem do produto</h5>
-                              <input class="draginput"  type="file" id="prodimg" accept="image/*" onchange="displayImage(this)">
-                              <img id="displayimg" src="#" alt="imagem do produto">
-                            </div>
-                            <div class="col-md-6">
-                              <small>
-                                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label ">
-                                <input class="mdl-textfield__input" type="text" pattern="-?[0-9]*(\.[0-9]+)?" id="prodprice">
-                                <label class="mdl-textfield__label" for="prodprice">Preço do Produto</label>
-                                <span class="mdl-textfield__error">Preço não é um número!</span>
-                                </div>
-                              </small>
-                              <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                                <textarea id="proddts" class="mdl-textfield__input" maxlength="300" type="text" rows="5" style="resize: none;"> </textarea>
-                                <label class="mdl-textfield__label" for="proddts" >Detalhes do produto</label>
-                              </div>
-
-                            </div>
-                          </div>
-                        </div>
-                        <div class="modal-footer">
-                          <button type="button" id="new-product" class="AddProdButton btn btn-success" data-bs-dismiss="modal"> Adicionar </button>
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
-
-                        </div>
-                      </form>
-                    </div>
-                  </div>
-                </div>
-                <!-- fim do Modal -->
 
           </div>
         </div>

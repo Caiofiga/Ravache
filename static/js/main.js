@@ -160,53 +160,101 @@ console.log("File(s) in drop zone");
 ev.preventDefault();
 }
 
-function getModal(button, type = undefined,newthing = false){
+function getModal(button,newthing = false){
   const modal = button.parentElement.parentElement.parentElement.querySelector(".eventmodalbase")
+  //add a switch to determine the type of modal to open
 
-  if (!newthing){ //Data alredy exists in DB, need to fetch 
-$.ajax({
-  url: "/set",
-  type: "GET",
-  data: {
-    csrf_token: csrf_token,
-    type: button.dataset.type, //Button is not the modal one. Remeber that
-    id: button.id,
-    },
-  success: function (response) {
-    if (response.code == "200") {
-    date = new Date(response.date)
-    modal.dataset.eventid = button.id
-    modal.dataset.type = response.type
-    modal.querySelector("#EventName").value = response.name;
+  switch (button.dataset.type){
 
-modal.querySelector("#EventImgDisplay").src = 'static/img/' +response.imglink;
+    case "events":
+      if (!newthing){ //Data alredy exists in DB, need to fetch 
+        $.ajax({
+          url: "/set",
+          type: "GET",
+          data: {
+            csrf_token: csrf_token,
+            type: button.dataset.type, //Button is not the modal one. Remeber that
+            id: button.id,
+            },
+          success: function (response) {
+            if (response.code == "200") {
+            date = new Date(response.date)
+            modal.dataset.eventid = button.id
+            modal.dataset.type = response.type
+            modal.querySelector("#EventName").value = response.name;
+        
+        modal.querySelector("#EventImgDisplay").src = 'static/img/' +response.imglink;
+        
+        modal.querySelector("#EventDts").value = response.details;
+        
+        
+        modal.querySelector("#EventDate").value = date.toISOString().slice(0, 10);
+        
+        modal.querySelector("#EventDtlink").value = response.dtlink;
+        
+        modal.querySelector("#EventPrice").value =parseFloat(response.price);
+            $("#EventModal").modal('show')
+          } 
+        },
+        })
+        }
+        else { //Nothing in DB, need to clear modal 
+        modal.dataset.eventid = "new"
+        modal.dataset.type = button.dataset.type
+          console.log("newthing")
+        modal.querySelector("#EventName").value = "";
+        modal.querySelector("#EventImgDisplay").src = undefined;
+        modal.querySelector("#EventDts").value = "";
+        modal.querySelector("#EventDate").value = "";
+        if (modal.querySelector("#EventDtlink")) modal.querySelector("#EventDtlink").value = ""; //dtlink only exists on events
+        modal.querySelector("#EventPrice").value = "";
+        $("#EventModal").modal('show')
+        
+        }
+        break;
+  
+    case "prods":
+      if (!newthing){ //Data alredy exists in DB, need to fetch 
+        $.ajax({
+          url: "/set",
+          type: "GET",
+          data: {
+            csrf_token: csrf_token,
+            type: button.dataset.type, //Button is not the modal one. Remeber that
+            id: button.id,
+            },
+          success: function (response) {
+            if (response.code == "200") {
+            date = new Date(response.date)
+            modal.dataset.eventid = button.id
+            modal.dataset.type = response.type
+            modal.querySelector("#ProdName").value = response.name;
+        
+        modal.querySelector("#ProdImgDisplay").src = 'static/img/' +response.imglink;
+        
+        modal.querySelector("#ProdDts").value = response.details;
+                
+        modal.querySelector("#ProdPrice").value =parseFloat(response.price);
+            $("#ProdModal").modal('show')
+          } 
+        },
+        })
+        }
+        else { //Nothing in DB, need to clear modal 
+        modal.dataset.eventid = "new"
+        modal.dataset.type = button.dataset.type
+          console.log("newthing")
+        modal.querySelector("#ProdName").value = "";
+        modal.querySelector("#ProdImgDisplay").src = undefined;
+        modal.querySelector("#ProdDts").value = "";
+        modal.querySelector("#ProdPrice").value = "";
+        $("#ProdModal").modal('show')
+        
+        }
 
-modal.querySelector("#EventDts").value = response.details;
+    break;
+      }
 
-
-modal.querySelector("#EventDate").value = date.toISOString().slice(0, 10);
-
-modal.querySelector("#EventDtlink").value = response.dtlink;
-
-modal.querySelector("#EventPrice").value =parseFloat(response.price);
-    $("#EventModal").modal('show')
-  } 
-},
-})
-}
-else { //Nothing in DB, need to clear modal 
-modal.dataset.eventid = "new"
-modal.dataset.type = type
-  console.log("newthing")
-modal.querySelector("#EventName").value = "";
-modal.querySelector("#EventImgDisplay").src = undefined;
-modal.querySelector("#EventDts").value = "";
-modal.querySelector("#EventDate").value = "";
-if (modal.querySelector("#EventDtlink")) modal.querySelector("#EventDtlink").value = ""; //dtlink only exists on events
-modal.querySelector("#EventPrice").value = "";
-$("#EventModal").modal('show')
-
-}
 }
 
 async function GetFilefromURL(url) {
