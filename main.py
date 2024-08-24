@@ -102,13 +102,15 @@ def GetGoogleSheets():
         event_time = event["date"]  # Directly use the datetime object
         delta = event_time - now
         if delta < timedelta(0):
-            event['date'] = f"{event_time.day}/{event_time.month}/{event_time.year}"
+            event['date'] = f"{
+                event_time.day}/{event_time.month}/{event_time.year}"
         else:
             months = delta.days // 30  # Calculate approximate months
             days = delta.days % 30  # Calculate the remainder of days
 
             # Event is in the future and closer than any previously found
-            event['date'] = f"{months} {'month' if months <= 1 else 'months'}, {days} {'day' if days <= 1 else 'days'} from now"
+            event['date'] = f"{months} {'month' if months <= 1 else 'months'}, {
+                days} {'day' if days <= 1 else 'days'} from now"
 
     # Check if this event is the closest future event so far
             if delta < closest_delta:
@@ -358,16 +360,29 @@ def update():
                 try:
                     updateddoc = Newproduct(request.form.get('name'), request.form.get(
                         'price'), request.form.get('details'), request.form.get('imageb64'))
-                    doc = db.collection(request.form.get('type')).document(
-                        request.form.get('id'))
-                    doc.update({
-                        u'name': updateddoc.name,
-                        u'price': updateddoc.price,
-                        u'details': updateddoc.details,
-                        u'imglink': updateddoc.imglink
-                    })
-                    revalidate = True
-                    return "0"
+                    if request.form.get('id') != 'new':
+                        doc = db.collection(request.form.get('type')).document(
+                            request.form.get('id'))
+                        doc.update({
+                            u'name': updateddoc.name,
+                            u'price': updateddoc.price,
+                            u'details': updateddoc.details,
+                            u'imglink': updateddoc.imglink
+                        })
+                        revalidate = True
+                        return "0"
+                    else:
+                        doc = db.collection(
+                            request.form.get('type')).document()
+                        doc.set({
+                            u'name': updateddoc.name,
+                            u'price': updateddoc.price,
+                            u'details': updateddoc.details,
+                            u'imglink': updateddoc.imglink
+                        })
+                        revalidate = True
+                        return "0"
+
                 except Exception as e:
                     return 'Error 500: ' + str(e)
             case _:

@@ -327,7 +327,7 @@ async function saveChanges(button){
       reader.onload = function() { 
         const imageb64 = reader.result.split(',')[1]            
         $.ajax({
-        url: "/update",
+          url:"/update",
         type: "POST",
         data: {
           type: modal.querySelector('.eventmodalbase').dataset.type,
