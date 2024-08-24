@@ -315,8 +315,6 @@ async function saveChanges(button){
 
         break;
       case "prods":
-
-
       image = modal.querySelector("#ProdImg").files[0];
       if (image == undefined) {
         imageurl = modal.querySelector("#ProdImgDisplay").src
@@ -332,9 +330,9 @@ async function saveChanges(button){
         url: "/update",
         type: "POST",
         data: {
-          type: modal.dataset.type,
+          type: modal.querySelector('.eventmodalbase').dataset.type,
           csrf_token: csrf_token,
-          id: modal.dataset.eventid,
+          id: modal.querySelector('.eventmodalbase').dataset.eventid,
           name:modal.querySelector("#ProdName").value, 
           details: modal.querySelector("#ProdDts").value,
           imageb64: imageb64,
