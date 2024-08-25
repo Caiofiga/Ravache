@@ -33,10 +33,13 @@ loginManager.init_app(app)
 
 class LoginForm(FlaskForm):
     username = StringField('Username', validators=[
-                           DataRequired(), Length(min=2, max=20)])
-    password = PasswordField('Password', validators=[DataRequired()])
-    remember = wtforms.BooleanField('Remember Me')
-    submit = SubmitField('Login')
+                           DataRequired(), Length(min=2, max=20)], render_kw={"class": "form-control"})
+    password = PasswordField('Password', validators=[DataRequired()], render_kw={
+                             "class": "form-control"})
+    remember = wtforms.BooleanField('Remember Me', render_kw={
+                                    "class": "form-check-input"})
+    submit = SubmitField('Login', render_kw={"class": "btn btn-primary"})
+
 
  # Fetch the service account key JSON file contents
 cred = credentials.Certificate('sheetviewerkey.json')
@@ -215,8 +218,7 @@ def login():
             user_dict['id'] = query.id
             break
         if user_dict is None:
-            flash('User not found')
-            return render_template("login.html", form=form)
+            return render_template("login.html", form=form, error=True)
         if bcrypt.check_password_hash(user_dict['password'], form.password.data):
             user = User(user_dict['id'],
                         user_dict['username'], user_dict['password'])
