@@ -352,3 +352,43 @@ async function saveChanges(button){
 
  
 }
+
+function editUser(user){
+  modal = document.querySelector("#exampleModal")
+  modal.querySelector("#editUserName").value = user
+  modal.dataset.olduser = user
+  $("#exampleModal").modal('show')
+}
+
+function saveUser(){
+  modal = document.querySelector("#exampleModal")
+  user = modal.dataset.olduser
+  $.ajax({
+    url: "/update",
+    type: "POST",
+    data: {
+      csrf_token: csrf_token,
+      type: "users",
+      id: user,
+      username: modal.querySelector("#editUserName").value,
+      password: modal.querySelector("#editUserPassword").value,
+    },
+    success: function (response) {
+      //location.reload();
+    },
+  })
+}
+function deleteUser(user){
+  $.ajax({
+    url: "/delete",
+    type: "POST",
+    data: {
+      csrf_token: csrf_token,
+      type: "user",
+      id: user,
+    },
+    success: function (response) {
+      location.reload();
+    },
+  })
+}

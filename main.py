@@ -32,16 +32,28 @@ loginManager.init_app(app)
 
 
 class LoginForm(FlaskForm):
-    username = StringField('Username', validators=[
+    username = StringField('Nome do Usuario', validators=[
                            DataRequired(), Length(min=2, max=20)], render_kw={"class": "form-control"})
-    password = PasswordField('Password', validators=[DataRequired()], render_kw={
+    password = PasswordField('Senha', validators=[DataRequired()], render_kw={
                              "class": "form-control"})
     remember = wtforms.BooleanField('Remember Me', render_kw={
                                     "class": "form-check-input"})
     submit = SubmitField('Login', render_kw={"class": "btn btn-primary"})
 
+ # Fetch the service account key JSON file contents
+
+
+class AddUserForm(FlaskForm):
+    username = StringField('Nome do Usuario', validators=[
+                           DataRequired(), Length(min=2, max=20)], render_kw={"class": "form-control newUserName"})
+    password = PasswordField('Senha', validators=[DataRequired()], render_kw={
+                             "class": "form-control newUserPassword"})
+
+    submit = SubmitField('Adicionar', render_kw={"class": "btn btn-primary"})
 
  # Fetch the service account key JSON file contents
+
+
 cred = credentials.Certificate('sheetviewerkey.json')
 
 
@@ -181,9 +193,51 @@ def favicon():
     return send_file('favicon.ico', mimetype='image')
 
 
-@app.route('/admin', methods=['GET', 'POST'])
+@app.route('/admin')
 @login_required
 def admin():
+    adminevents()
+
+
+@app.route('/adminusers', methods=['GET', 'POST'])
+@login_required
+def adminusers():
+
+    usersdb = db.collection(u'users').stream()
+    users = []
+    for user in usersdb:
+        users.append(user._data['username'])
+    form = AddUserForm()
+    if form.validate_on_submit():
+        try:
+            queries = db.collection(u'users').where(filter=FieldFilter(
+                "username", "==", form.username.data)).stream()
+            user_exists = False
+            for query in queries:
+                user_exists = True
+                break  # If at least one document is found, the user exists
+            if not user_exists:
+                hashed_password = bcrypt.generate_password_hash(
+                    form.password.data).decode('utf-8')
+                new_user = {
+                    'username': form.username.data,
+                    'password': hashed_password,
+                    # Add any other fields you need to store for the user
+                }
+                db.collection(u'users').add(new_user)
+                return render_template('/admin-users.html', form=form, users=users, success=True, username=form.username.data)
+                # upload to firestore
+            else:
+                return render_template("admin-users.html", form=form, users=users, error=True, message="Usuario com esse nome ja existe")
+        except Exception as e:
+            print(str(e))
+            return render_template("admin-users.html", form=form, users=users, error=True, message=str(e))
+    return render_template("admin-users.html", form=form, users=users)
+
+
+@app.route('/adminevents', methods=['GET', 'POST'])
+@login_required
+def adminevents():
     global events, products, checktime, revalidate
 
     if request.method == 'POST':
@@ -200,10 +254,35 @@ def admin():
                 revalidate = False
                 print('revalidated')
         if request.cookies.get('admin') == 'true':
-            return render_template("admin.html", events=events, products=products)
+            return render_template("admin-eventos.html", events=events)
         else:
             login()
-        return render_template("admin.html", events=events, products=products)
+        return render_template("admin-eventos.html", events=events)
+
+
+@app.route('/adminprods', methods=['GET', 'POST'])
+@login_required
+def adminprods():
+    global events, products, checktime, revalidate
+
+    if request.method == 'POST':
+        print('yee')
+        if 'deleteEventButton' in request.form:
+            print(request.form['deleteEventButton'])
+        else:
+            pass  # unknown
+    elif request.method == 'GET':
+        if (checktime - datetime.now()) > timedelta(minutes=10) or revalidate:
+            with data_lock:
+                events, products = GetGoogleSheets()
+                checktime = datetime.now()
+                revalidate = False
+                print('revalidated')
+        if request.cookies.get('admin') == 'true':
+            return render_template("admin-prods.html", products=products)
+        else:
+            login()
+        return render_template("admin-prods.html", products=products)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -225,7 +304,7 @@ def login():
             login_user(
                 user, remember=form.remember.data if form.remember.data else False)
             if user.is_authenticated:
-                return redirect('/admin')
+                return redirect('/adminevents')
 
     return render_template("login.html", form=form)
 
@@ -309,6 +388,16 @@ def delete():
                     return '200'
                 except Exception as e:
                     return 'Error 500: ' + e
+            case 'user':
+                try:
+                    query = db.collection(u'users').where(
+                        filter=FieldFilter('username', '==', request.form.get('id'))).stream()
+                    for result in query:
+                        db.collection(u'users').document(result.id).delete()
+                        break
+                except Exception as e:
+                    return 'Error 500: ' + str(e)
+                return '200'
 
 
 @app.route('/set', methods=['GET', 'POST'])
@@ -385,6 +474,20 @@ def update():
                         revalidate = True
                         return "0"
 
+                except Exception as e:
+                    return 'Error 500: ' + str(e)
+            case 'users':
+                try:
+                    updateduser = {
+                        'username': request.form.get('username'),
+                        'password': bcrypt.generate_password_hash(request.form.get('password')).decode('utf-8')
+                    }
+                    query = db.collection(u'users').where(
+                        filter=FieldFilter('username', '==', request.form.get('id'))).stream()
+                    for result in query:
+                        result.reference.update(updateduser)
+                        break
+                    return '200'
                 except Exception as e:
                     return 'Error 500: ' + str(e)
             case _:
