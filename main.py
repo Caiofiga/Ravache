@@ -117,15 +117,13 @@ def GetGoogleSheets():
         event_time = event["date"]  # Directly use the datetime object
         delta = event_time - now
         if delta < timedelta(0):
-            event['date'] = f"{
-                event_time.day}/{event_time.month}/{event_time.year}"
+            event['date'] = f"{event_time.day}/{event_time.month}/{event_time.year}"
         else:
             months = delta.days // 30  # Calculate approximate months
             days = delta.days % 30  # Calculate the remainder of days
 
             # Event is in the future and closer than any previously found
-            event['date'] = f"{months} {'month' if months <= 1 else 'months'}, {
-                days} {'day' if days <= 1 else 'days'} from now"
+            event['date'] = f"{months} {'month' if months <= 1 else 'months'}, {days} {'day' if days <= 1 else 'days'} from now"
 
     # Check if this event is the closest future event so far
             if delta < closest_delta:
